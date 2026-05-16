@@ -56,3 +56,9 @@ Este documento apresenta a modelagem conceitual inicial do banco de dados do sis
 - DHT22 — Temperatura e Umidade do Ar
 - HW-080 — Umidade do Solo
 - LDR — Luminosidade
+
+  ---
+
+# Diagrama Entidade-Relacionamento (DER)
+
+![DER AgroSensor](./diagramas/der-agrosensor.png)
