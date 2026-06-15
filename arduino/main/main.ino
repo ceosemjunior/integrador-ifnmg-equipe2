@@ -23,8 +23,8 @@ void loop() {
   float umidade_ar = dht.readHumidity();
   float temperatura = dht.readTemperature();
 
-  unsigned int leituraSolo = analogRead(SOLO_SENSOR);
-  unsigned int umidade_solo = map(leituraSolo, 1023, 0, 0, 100);
+  unsigned int leitura_solo = analogRead(SOLO_SENSOR);
+  unsigned int umidade_solo = map(leitura_solo, 1023, 0, 0, 100);
 
   if (isnan(umidade_ar) || isnan(temperatura)) {
     umidade_ar = 0;
