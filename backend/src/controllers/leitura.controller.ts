@@ -4,10 +4,11 @@ import { parseId } from '../utils/parse-id.js';
 
 export const LeituraController = {
   async criar(req: Request, res: Response, _next: NextFunction) {
-    const leituras = await LeituraService.criar(req.body);
+    const leitura = await LeituraService.criar(req.body);
+
     return res.status(201).json({
-      mensagem: `Dados dos sensores processados para ${leituras.length} plantação(ões).`,
-      dados: leituras,
+      mensagem: 'Dados dos sensores processados com sucesso.',
+      dados: leitura,
     });
   },
 

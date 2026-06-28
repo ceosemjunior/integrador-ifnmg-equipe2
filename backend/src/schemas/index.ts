@@ -50,7 +50,7 @@ export const criarPlantacaoSensorSchema = z.object({
 export const atualizarPlantacaoSensorSchema = criarPlantacaoSensorSchema.partial();
 
 export const criarLeituraSchema = z.object({
-  plantacao_id: z.uuid().optional(),
+  plantacao_id: z.uuid('ID da plantação deve ser um UUID válido'),
   umidade_solo: z.number().optional(),
   umidade_ar: z.number().optional(),
   temperatura: z.number().optional(),

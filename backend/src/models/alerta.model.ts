@@ -8,6 +8,12 @@ export const AlertaModel = {
     });
   },
 
+  async criarMultiplos(data: Prisma.AlertaCreateManyInput[]) {
+    return await prisma.alerta.createMany({
+      data,
+    });
+  },
+
   async buscarPorId(id: string) {
     return await prisma.alerta.findUnique({
       where: { id },
