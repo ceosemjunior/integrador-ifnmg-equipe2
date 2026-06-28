@@ -1,5 +1,7 @@
 #include "DHT.h"
 
+const String plantacao_id = "eee6cb40-de99-4ba4-b326-2e10689cd94b";
+
 #define SOLO_SENSOR A0
 #define LDR_SENSOR A1
 #define DHTPIN 3
@@ -26,6 +28,8 @@ void loop() {
   unsigned int leitura_solo = analogRead(SOLO_SENSOR);
   unsigned int umidade_solo = map(leitura_solo, 1023, 0, 0, 100);
 
+  Serial.print(plantacao_id);
+  Serial.print(F(","));
   Serial.print(umidade_solo);
   Serial.print(F(","));
   Serial.print(umidade_ar);
