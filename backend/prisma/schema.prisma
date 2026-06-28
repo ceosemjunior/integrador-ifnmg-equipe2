@@ -45,6 +45,11 @@ enum tipoAlerta {
   Critico
 }
 
+enum DirecaoAlerta {
+  ABAIXO
+  ACIMA
+}
+
 enum tipoDispositivo {
   Arduino_Mega     @map("Arduino Mega")
   Arduino_Micro    @map("Arduino Micro")
@@ -95,6 +100,7 @@ model Sensor {
   tipo      tipoSensor
   unidade   String // Ex: "°C", "%", "Lux"
   status    statusSensor @default(Inativo)
+  direcao   DirecaoAlerta @default(ABAIXO)
   criado_em DateTime     @default(now())
 
   plantacoes PlantacaoSensor? // permite o sensor não estar em nenhuma plantação
