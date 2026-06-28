@@ -6,53 +6,8 @@ const caminhoPortaSerial = env.SERIAL_PORT;
 const urlBackend = env.BACKEND_URL;
 const taxaBaud = env.SERIAL_BAUD;
 
-const serialPort = new SerialPort({
-  path: caminhoPortaSerial,
-  baudRate: taxaBaud,
-});
-
-serialPort.on('error', (erro) => {
-  console.error(`Erro critico na porta serial (${caminhoPortaSerial}):`, erro.message);
-  console.log('Você conectou o arduino ao USB?');
-});
-
-serialPort.on('close', () => {
-  console.warn(`Alerta: A conexão física com o Arduino em ${caminhoPortaSerial} foi interrompida!`);
-  console.warn('O cabo USB provavelmente foi desconectado.');
-  process.exit(1);
-});
-
-const parser = serialPort.pipe(new ReadlineParser({ delimiter: '\r\n' }));
-
-parser.on('data', async (linha) => {
-  const dadosSegmentados = linha.trim().split(',');
-
-  if (dadosSegmentados.length !== 4) {
-    console.warn(`Esperado 4 colunas, recebido: ${dadosSegmentados.length}.`);
-    return;
-  }
-
-  const dadosSensor = {
-    umidade_solo: parseInt(dadosSegmentados[0], 10),
-    umidade_ar: parseFloat(dadosSegmentados[1]),
-    temperatura: parseFloat(dadosSegmentados[2]),
-    luminosidade: parseInt(dadosSegmentados[3], 10),
-  };
-
-  const dadosValidos =
-    !isNaN(dadosSensor.umidade_solo) &&
-    !isNaN(dadosSensor.umidade_ar) &&
-    !isNaN(dadosSensor.temperatura) &&
-    !isNaN(dadosSensor.luminosidade);
-
-  if (!dadosValidos) {
-    console.warn('Dados ignorados: Conversão gerou valores não numericos (NaN).');
-    return;
-  }
-
+async function enviarParaBackend(dadosSensor: any): Promise<void> {
   try {
-    console.log(`Enviando dados: Solo: ${dadosSensor.umidade_solo}%, Ar: ${dadosSensor.umidade_ar}%, Temp: ${dadosSensor.temperatura}C, Luz: ${dadosSensor.luminosidade}%`);
-
     const resposta = await fetch(urlBackend, {
       method: 'POST',
       headers: {
@@ -62,18 +17,96 @@ parser.on('data', async (linha) => {
     });
 
     if (!resposta.ok) {
-      const dadosErro = await resposta.json() as { erro?: string };
-      console.error(`O Servidor rejeitou os dados (Status ${resposta.status}):`, dadosErro.erro || 'Erro desconhecido');
-    } else {
-      console.log('Dados processados e salvos no banco SQLite com sucesso.');
+      const dadosErro = await resposta.json().catch(() => null) as { erro?: string } | null;
+      console.error(`❌ Servidor rejeitou os dados (Status ${resposta.status}):`, dadosErro?.erro || 'Erro desconhecido');
+      return;
     }
 
+    console.log('✅ Dados salvos com sucesso no backend.');
   } catch (err) {
-    if (err instanceof Error)
-      console.error('Erro de conexao com a API Backend:', err.message);
+    console.error('⚠️ Erro de conexão com a API Backend:', err instanceof Error ? err.message : String(err));
   }
-});
+}
 
-console.log('Gateway iniciado com sucesso!');
-console.log(`Escutando arduino em: ${caminhoPortaSerial} @ ${taxaBaud} bps`);
-console.log(`Enviando JSON para: ${urlBackend}`);
+function processarDadosArduino(linha: string) {
+  const dadosSegmentados = linha.trim().split(',');
+
+  if (dadosSegmentados.length !== 5) {
+    console.warn(`⚠️ Ignorado: Esperado 5 colunas, recebido ${dadosSegmentados.length}.`);
+    return null;
+  }
+
+  const dadosSensor = {
+    plantacao_id: dadosSegmentados[0],
+    umidade_solo: parseFloat(dadosSegmentados[1]),
+    umidade_ar: parseFloat(dadosSegmentados[2]),
+    temperatura: parseFloat(dadosSegmentados[3]),
+    luminosidade: parseFloat(dadosSegmentados[4]),
+  };
+
+  const dadosValidos =
+    dadosSensor.plantacao_id !== "" &&
+    !isNaN(dadosSensor.umidade_solo) &&
+    !isNaN(dadosSensor.umidade_ar) &&
+    !isNaN(dadosSensor.temperatura) &&
+    !isNaN(dadosSensor.luminosidade);
+
+  if (!dadosValidos) {
+    console.warn('⚠️ Dados ignorados: ID vazio ou conversão gerou valores não numéricos (NaN).');
+    return null;
+  }
+
+  return dadosSensor;
+}
+
+let reconectar = false;
+
+function agendarReconexao(): void {
+  if (reconectar) return;
+
+  reconectar = true;
+  console.warn(`⏳ Tentando nova conexão em 5 segundos...`);
+
+  setTimeout(() => {
+    reconectar = false;
+    conectarSerial();
+  }, 5000);
+}
+
+function conectarSerial(): void {
+  const serialPort = new SerialPort({
+    path: caminhoPortaSerial,
+    baudRate: taxaBaud,
+  });
+
+  const parser = serialPort.pipe(new ReadlineParser({ delimiter: '\r\n' }));
+
+  serialPort.on('open', () => {
+    console.log(`  Conectado ao dispositivo em: ${caminhoPortaSerial} @ ${taxaBaud} bps`);
+  });
+
+  serialPort.on('error', (erro: Error) => {
+    console.error(`❌ Erro na porta serial:`, erro.message);
+    if (!serialPort.isOpen) {
+      agendarReconexao();
+    }
+  });
+
+  serialPort.on('close', () => {
+    console.warn(`⚠️ Conexão perdida.`);
+    agendarReconexao();
+  });
+
+  parser.on('data', async (linha: string) => {
+    const dadosSensor = processarDadosArduino(linha);
+
+    if (dadosSensor) {
+      console.log(`🌱 Plantação: ${dadosSensor.plantacao_id} | Solo: ${dadosSensor.umidade_solo}% | Ar: ${dadosSensor.umidade_ar}% | Temp: ${dadosSensor.temperatura}ºC | Luz: ${dadosSensor.luminosidade}%`);
+      await enviarParaBackend(dadosSensor);
+    }
+  });
+}
+
+console.log('😈 Gateway AgroSensor iniciado!');
+console.log(`  Rota de destino: ${urlBackend}`);
+conectarSerial();
