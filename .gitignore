@@ -3,4 +3,3 @@ arduino/main/sketch.yaml
 node_modules/
 .env
 dev.db
-bruno/
