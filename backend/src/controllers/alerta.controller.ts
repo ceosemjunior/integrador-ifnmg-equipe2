@@ -37,6 +37,12 @@ export const AlertaController = {
     return res.status(200).json(alertas);
   },
 
+  async buscarResumo(req: Request, res: Response, _next: NextFunction) {
+    const plantacao_id = parseId(req, 'plantacao_id');
+    const resumo = await AlertaService.buscarResumo(plantacao_id);
+    return res.status(200).json(resumo);
+  },
+
   async deletar(req: Request, res: Response, _next: NextFunction) {
     const id = parseId(req);
     const resultado = await AlertaService.deletar(id);

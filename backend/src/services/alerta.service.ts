@@ -44,6 +44,10 @@ export const AlertaService = {
     return await AlertaModel.buscarTodos(pagina, limite);
   },
 
+  async buscarResumo(plantacao_id: string) {
+    return await AlertaModel.buscarResumo(plantacao_id);
+  },
+
   async deletar(id: string) {
     await AlertaService.buscarPorId(id);
     await AlertaModel.deletar(id);

@@ -10,6 +10,7 @@ router.post('/dispositivo-offline', AlertaController.notificarOffline);
 router.get('/', AlertaController.buscarTodos);
 router.get('/:id', AlertaController.buscarPorId);
 router.get('/plantacao/:plantacao_id', AlertaController.buscarPorPlantacao);
+router.get('/resumo/:plantacao_id', AlertaController.buscarResumo);
 router.get('/usuario/:usuario_id', AlertaController.buscarPorUsuario);
 router.delete('/:id', AlertaController.deletar);
 
