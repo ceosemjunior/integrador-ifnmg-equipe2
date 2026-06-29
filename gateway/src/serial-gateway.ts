@@ -6,7 +6,7 @@ const caminhoPortaSerial = env.SERIAL_PORT;
 const urlBackend = env.BACKEND_URL;
 const taxaBaud = env.SERIAL_BAUD;
 const urlBackendBase = new URL(urlBackend).origin;
-const timeoutOfflineMs = 1_500_000;
+const timeoutOfflineMs = 1_500_000; // TEST: 20_000 pra debugar 
 
 let ultimaPlantacaoId = '';
 let timerOffline: NodeJS.Timeout | null = null;
