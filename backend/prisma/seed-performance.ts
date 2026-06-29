@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import prisma from "../src/lib/prisma.js";
-import { tipoSensor, statusSensor, tipoDispositivo, statusDispositivo } from "@prisma/client";
+import { tipoSensor, statusSensor, tipoDispositivo, statusDispositivo, DirecaoAlerta } from "@prisma/client";
 
 const INTERVALO_MINUTOS = 2;
 const DIAS_SIMULADOS = 90;
@@ -43,7 +43,7 @@ async function main() {
   });
 
   const sTemp = await prisma.sensor.create({
-    data: { nome: "DHT22 - Sensor de Temperatura", tipo: tipoSensor.temperatura, unidade: "°C", status: statusSensor.Ativo },
+    data: { nome: "DHT22 - Sensor de Temperatura", tipo: tipoSensor.temperatura, unidade: "°C", status: statusSensor.Ativo, direcao: DirecaoAlerta.ACIMA },
   });
 
   const sSolo = await prisma.sensor.create({
