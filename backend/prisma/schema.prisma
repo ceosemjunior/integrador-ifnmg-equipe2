@@ -1,12 +1,12 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
 
 datasource db {
   provider = "sqlite"
-}
-
-generator client {
-  provider = "prisma-client-js"
 }
 
 model Usuario {
@@ -95,13 +95,13 @@ model Plantacao {
 }
 
 model Sensor {
-  id        String       @id @default(uuid())
+  id        String        @id @default(uuid())
   nome      String // Ex: "Sensor de Temperatura DHT11"
   tipo      tipoSensor
   unidade   String // Ex: "°C", "%", "Lux"
-  status    statusSensor @default(Inativo)
+  status    statusSensor  @default(Inativo)
   direcao   DirecaoAlerta @default(ABAIXO)
-  criado_em DateTime     @default(now())
+  criado_em DateTime      @default(now())
 
   plantacoes PlantacaoSensor? // permite o sensor não estar em nenhuma plantação
 
