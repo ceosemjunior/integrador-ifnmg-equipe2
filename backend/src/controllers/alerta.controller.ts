@@ -31,7 +31,9 @@ export const AlertaController = {
   },
 
   async buscarTodos(_req: Request, res: Response, _next: NextFunction) {
-    const alertas = await AlertaService.buscarTodos();
+    const pagina = Number(_req.query.pagina) || undefined;
+    const limite = Number(_req.query.limite) || undefined;
+    const alertas = await AlertaService.buscarTodos(pagina, limite);
     return res.status(200).json(alertas);
   },
 

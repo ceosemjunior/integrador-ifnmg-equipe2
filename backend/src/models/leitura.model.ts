@@ -8,11 +8,17 @@ export const LeituraModel = {
     });
   },
 
-  async buscarTodos() {
-    return await prisma.leitura.findMany({
-      orderBy: { data_hora: 'desc' },
-      include: { plantacao: { select: { id: true, nome: true } } },
-    });
+  async buscarTodos(pagina: number = 1, limite: number = 50) {
+    const [dados, total] = await Promise.all([
+      prisma.leitura.findMany({
+        skip: (pagina - 1) * limite,
+        take: limite,
+        orderBy: { data_hora: 'desc' },
+        include: { plantacao: { select: { id: true, nome: true } } },
+      }),
+      prisma.leitura.count(),
+    ]);
+    return { dados, total, pagina, totalPaginas: Math.ceil(total / limite) };
   },
 
   async buscarPorId(id: string) {

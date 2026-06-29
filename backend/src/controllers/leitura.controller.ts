@@ -13,7 +13,9 @@ export const LeituraController = {
   },
 
   async buscarTodos(_req: Request, res: Response, _next: NextFunction) {
-    const leituras = await LeituraService.buscarTodos();
+    const pagina = Number(_req.query.pagina) || undefined;
+    const limite = Number(_req.query.limite) || undefined;
+    const leituras = await LeituraService.buscarTodos(pagina, limite);
     return res.status(200).json(leituras);
   },
 

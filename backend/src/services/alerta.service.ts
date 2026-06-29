@@ -40,8 +40,8 @@ export const AlertaService = {
     return await AlertaModel.buscarPorUsuario(usuario_id);
   },
 
-  async buscarTodos() {
-    return await AlertaModel.buscarTodos();
+  async buscarTodos(pagina?: number, limite?: number) {
+    return await AlertaModel.buscarTodos(pagina, limite);
   },
 
   async deletar(id: string) {

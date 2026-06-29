@@ -45,8 +45,8 @@ export const LeituraService = {
     return resultado;
   },
 
-  async buscarTodos() {
-    return await LeituraModel.buscarTodos();
+  async buscarTodos(pagina?: number, limite?: number) {
+    return await LeituraModel.buscarTodos(pagina, limite);
   },
 
   async buscarPorId(id: string) {

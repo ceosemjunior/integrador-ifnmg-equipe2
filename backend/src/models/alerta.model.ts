@@ -34,10 +34,16 @@ export const AlertaModel = {
     });
   },
 
-  async buscarTodos() {
-    return await prisma.alerta.findMany({
-      orderBy: { gerado_em: 'desc' },
-    });
+  async buscarTodos(pagina: number = 1, limite: number = 50) {
+    const [dados, total] = await Promise.all([
+      prisma.alerta.findMany({
+        skip: (pagina - 1) * limite,
+        take: limite,
+        orderBy: { gerado_em: 'desc' },
+      }),
+      prisma.alerta.count(),
+    ]);
+    return { dados, total, pagina, totalPaginas: Math.ceil(total / limite) };
   },
 
   async deletar(id: string) {
