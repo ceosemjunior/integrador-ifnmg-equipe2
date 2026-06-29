@@ -3,6 +3,9 @@ import { Request, Response, NextFunction } from 'express';
 
 export function errorHandler(err: any, _req: Request, res: Response, _next: NextFunction) {
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
+    if (err.code === 'P2002') {
+      return res.status(409).json({ erro: 'Já existe um registro com este valor único.' });
+    }
     if (err.code === 'P2003') {
       return res.status(409).json({ erro: 'Registro possui vínculos com outros registros. Remova-os primeiro.' });
     }
