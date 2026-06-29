@@ -62,7 +62,6 @@ export const AlertaService = {
     const alertasParaCriar: { tipo: tipoAlerta; mensagem: string }[] = [];
 
     for (const vinculo of vinculos) {
-      // Usa o tipo do sensor como chave direta no modelo de leitura
       const valor = leitura[vinculo.sensor.tipo as keyof typeof leitura];
 
       if (typeof valor !== 'number') continue;
