@@ -1,4 +1,4 @@
-import { tipoAlerta, tipoSensor } from '@prisma/client';
+import { tipoAlerta, DirecaoAlerta } from '@prisma/client';
 import { AlertaModel } from '../models/alerta.model.js';
 import { LeituraModel } from '../models/leitura.model.js';
 import { PlantacaoModel } from '../models/plantacao.model.js';
@@ -14,13 +14,6 @@ interface CriarAlertaDados {
   mensagem: string;
   notificacao?: boolean;
 }
-
-const TIPO_PARA_CAMPO_LEITURA: Record<tipoSensor, keyof { temperatura?: number | null; umidade_ar?: number | null; umidade_solo?: number | null; luminosidade?: number | null }> = {
-  [tipoSensor.temperatura]: 'temperatura',
-  [tipoSensor.umidade_ar]: 'umidade_ar',
-  [tipoSensor.umidade_solo]: 'umidade_solo',
-  [tipoSensor.luminosidade]: 'luminosidade',
-};
 
 export const AlertaService = {
   async criar(dados: CriarAlertaDados) {
@@ -66,16 +59,15 @@ export const AlertaService = {
 
     if (!leitura || !plantacao) return [];
 
-    const alertasCriados = [];
+    const alertasParaCriar: { tipo: tipoAlerta; mensagem: string }[] = [];
 
     for (const vinculo of vinculos) {
-      const campoLeitura = TIPO_PARA_CAMPO_LEITURA[vinculo.sensor.tipo as tipoSensor];
-      const valor = leitura[campoLeitura];
+      // Usa o tipo do sensor como chave direta no modelo de leitura
+      const valor = leitura[vinculo.sensor.tipo as keyof typeof leitura];
 
-      if (valor === null || valor === undefined) continue;
+      if (typeof valor !== 'number') continue;
 
-      const tipoSensorAtual = vinculo.sensor.tipo as tipoSensor;
-      const ehMenorQue = tipoSensorAtual === tipoSensor.umidade_solo || tipoSensorAtual === tipoSensor.umidade_ar;
+      const ehMenorQue = vinculo.sensor.direcao === DirecaoAlerta.ABAIXO;
 
       const excedeuCritico = ehMenorQue
         ? valor <= vinculo.limite_critico
@@ -86,28 +78,32 @@ export const AlertaService = {
         : valor >= vinculo.limite_atencao;
 
       if (excedeuCritico) {
-        const alerta = await AlertaService.criar({
-          leitura_id,
-          usuario_id: plantacao.usuario_id,
-          plantacao_id,
+        alertasParaCriar.push({
           tipo: tipoAlerta.Critico,
           mensagem: `Alerta Crítico: ${vinculo.sensor.nome} atingiu ${valor}. Limite crítico: ${vinculo.limite_critico}.`,
         });
-        alertasCriados.push(alerta);
-        enviarWhatsApp(alerta.mensagem).catch(erro => console.error('WhatsApp error:', erro));
       } else if (excedeuAtencao) {
-        const alerta = await AlertaService.criar({
-          leitura_id,
-          usuario_id: plantacao.usuario_id,
-          plantacao_id,
+        alertasParaCriar.push({
           tipo: tipoAlerta.Atencao,
           mensagem: `Alerta de Atenção: ${vinculo.sensor.nome} atingiu ${valor}. Limite de atenção: ${vinculo.limite_atencao}.`,
         });
-        alertasCriados.push(alerta);
-        enviarWhatsApp(alerta.mensagem).catch(erro => console.error('WhatsApp error:', erro));
       }
     }
 
-    return alertasCriados;
+    if (alertasParaCriar.length === 0) return [];
+
+    await AlertaModel.criarMultiplos(
+      alertasParaCriar.map(alerta => ({
+        leitura_id,
+        usuario_id: plantacao.usuario_id,
+        plantacao_id,
+        tipo: alerta.tipo,
+        mensagem: alerta.mensagem,
+      }))
+    );
+
+    alertasParaCriar.forEach(a => enviarWhatsApp(a.mensagem).catch(erro => console.error('WhatsApp error:', erro)));
+
+    return alertasParaCriar;
   },
 };
