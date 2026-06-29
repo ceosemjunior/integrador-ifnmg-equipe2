@@ -28,11 +28,21 @@ export const LeituraModel = {
     });
   },
 
-  async buscarUltima(plantacao_id: string) {
-    return await prisma.leitura.findFirst({
-      where: { plantacao_id },
-      orderBy: { data_hora: 'desc' },
-    });
+  async buscarDadosDashboard(plantacao_id: string) {
+    const [ultima, agregado, totalLeituras, totalAlertas] = await Promise.all([
+      prisma.leitura.findFirst({
+        where: { plantacao_id },
+        orderBy: { data_hora: 'desc' },
+      }),
+      prisma.leitura.aggregate({
+        where: { plantacao_id },
+        _avg: { temperatura: true, umidade_solo: true, umidade_ar: true, luminosidade: true },
+      }),
+      prisma.leitura.count({ where: { plantacao_id } }),
+      prisma.alerta.count({ where: { plantacao_id } }),
+    ]);
+
+    return { ultima, medias: agregado._avg, total_leituras: totalLeituras, total_alertas: totalAlertas };
   },
 
   async atualizar(id: string, data: Prisma.LeituraUpdateInput) {

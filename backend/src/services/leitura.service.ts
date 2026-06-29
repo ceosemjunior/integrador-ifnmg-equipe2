@@ -54,8 +54,8 @@ export const LeituraService = {
   },
 
   async obterDadosDashboard(plantacao_id: string) {
-    const dados = await LeituraModel.buscarUltima(plantacao_id);
-    if (!dados) {
+    const dados = await LeituraModel.buscarDadosDashboard(plantacao_id);
+    if (!dados.ultima) {
       throw new Error('Nenhuma leitura encontrada para esta plantação.');
     }
     return dados;
