@@ -1,6 +1,6 @@
 // ------------ Código para simular o gateway de forma autonôma ------------
 
-const String plantacao_id = "";
+const String plantacao_id = "d05f1635-3743-48a8-8bb0-1c0b50c3cb7f";
 
 void setup() {
   Serial.begin(115200);

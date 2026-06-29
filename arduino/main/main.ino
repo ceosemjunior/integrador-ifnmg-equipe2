@@ -1,6 +1,6 @@
 #include "DHT.h"
 
-const String plantacao_id = "eee6cb40-de99-4ba4-b326-2e10689cd94b";
+const String plantacao_id = "d05f1635-3743-48a8-8bb0-1c0b50c3cb7f";
 
 #define SOLO_SENSOR A0
 #define LDR_SENSOR A1
