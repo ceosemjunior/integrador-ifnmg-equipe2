@@ -115,7 +115,7 @@ model PlantacaoSensor {
   limite_atencao Float
   limite_critico Float
 
-  plantacao Plantacao @relation(fields: [plantacao_id], references: [id], onDelete: Restrict)
+  plantacao Plantacao @relation(fields: [plantacao_id], references: [id], onDelete: Cascade)
   sensor    Sensor    @relation(fields: [sensor_id], references: [id]) // Restrict: não deletar sensor em uso
 
   @@unique([plantacao_id, sensor_id]) // Impede duplicar o mesmo sensor na mesma plantação
@@ -149,7 +149,7 @@ model Alerta {
 
   leitura   Leitura   @relation(fields: [leitura_id], references: [id], onDelete: Cascade)
   usuario   Usuario   @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
-  plantacao Plantacao @relation(fields: [plantacao_id], references: [id])
+  plantacao Plantacao @relation(fields: [plantacao_id], references: [id], onDelete: Cascade)
 
   @@map("alerta")
 }
