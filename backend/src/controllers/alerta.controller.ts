@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { AlertaService } from '../services/alerta.service.js';
+import { enviarWhatsApp } from '../services/whatsapp.service.js';
 import { parseId } from '../utils/parse-id.js';
 
 export const AlertaController = {
@@ -38,5 +39,16 @@ export const AlertaController = {
     const id = parseId(req);
     const resultado = await AlertaService.deletar(id);
     return res.status(200).json(resultado);
+  },
+
+  async notificarOffline(req: Request, res: Response, _next: NextFunction) {
+    const { plantacao_id, mensagem } = req.body;
+
+    if (!plantacao_id || !mensagem) {
+      return res.status(400).json({ erro: 'plantacao_id e mensagem são obrigatórios.' });
+    }
+
+    await enviarWhatsApp(mensagem);
+    return res.status(200).json({ mensagem: 'Notificação offline enviada com sucesso.' });
   },
 };

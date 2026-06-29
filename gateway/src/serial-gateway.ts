@@ -5,6 +5,11 @@ import { env } from './env/index.js';
 const caminhoPortaSerial = env.SERIAL_PORT;
 const urlBackend = env.BACKEND_URL;
 const taxaBaud = env.SERIAL_BAUD;
+const urlBackendBase = new URL(urlBackend).origin;
+const timeoutOfflineMs = 1_500_000;
+
+let ultimaPlantacaoId = '';
+let timerOffline: NodeJS.Timeout | null = null;
 
 async function enviarParaBackend(dadosSensor: any): Promise<void> {
   try {
@@ -95,12 +100,31 @@ function conectarSerial(): void {
   serialPort.on('close', () => {
     console.warn(`⚠️ Conexão perdida.`);
     agendarReconexao();
+
+    if (ultimaPlantacaoId && !timerOffline) {
+      timerOffline = setTimeout(() => {
+        fetch(`${urlBackendBase}/api/alertas/dispositivo-offline`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            plantacao_id: ultimaPlantacaoId,
+            mensagem: `⚠️ Dispositivo offline há mais de 25 minutos!`,
+          }),
+        }).catch(err => console.error('Falha ao notificar dispositivo offline:', err.message));
+      }, timeoutOfflineMs);
+    }
   });
 
   parser.on('data', async (linha: string) => {
     const dadosSensor = processarDadosArduino(linha);
 
     if (dadosSensor) {
+      ultimaPlantacaoId = dadosSensor.plantacao_id;
+      if (timerOffline) {
+        clearTimeout(timerOffline);
+        timerOffline = null;
+      }
+
       console.log(`🌱 Plantação: ${dadosSensor.plantacao_id} | Solo: ${dadosSensor.umidade_solo}% | Ar: ${dadosSensor.umidade_ar}% | Temp: ${dadosSensor.temperatura}ºC | Luz: ${dadosSensor.luminosidade}%`);
       await enviarParaBackend(dadosSensor);
     }
