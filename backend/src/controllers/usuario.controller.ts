@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { UsuarioService } from '../services/usuario.service.js';
-import { parseId } from '../utils/parse-id.js';
+import { UsuarioService } from '../services/usuario.service';
+import { parseId } from '../utils/parse-id';
 
 export const UsuarioController = {
   async criar(req: Request, res: Response, _next: NextFunction) {

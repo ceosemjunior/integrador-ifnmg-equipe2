@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { PlantacaoController } from '../controllers/plantacao.controller.js';
-import { validate } from '../middlewares/validate.js';
-import { criarPlantacaoSchema, atualizarPlantacaoSchema } from '../schemas/index.js';
+import { PlantacaoController } from '../controllers/plantacao.controller';
+import { validate } from '../middlewares/validate';
+import { criarPlantacaoSchema, atualizarPlantacaoSchema } from '../schemas/index';
 
 const router = Router();
 

@@ -8,7 +8,7 @@ export async function findOrThrow<T>(
   if (!entidade) {
     const artigo = feminino ? 'Nenhuma' : 'Nenhum';
     const sufixo = feminino ? 'a' : 'o';
-    throw new Error(`${artigo} ${nomeEntidade} não encontrad${sufixo} com o identificador ${id}.`);
+    throw new Error(`${artigo} ${nomeEntidade} encontrad${sufixo} com o identificador ${id}.`);
   }
   return entidade;
 }

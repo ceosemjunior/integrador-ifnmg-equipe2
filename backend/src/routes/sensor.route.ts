@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { SensorController } from '../controllers/sensor.controller.js';
-import { validate } from '../middlewares/validate.js';
-import { criarSensorSchema, atualizarSensorSchema } from '../schemas/index.js';
+import { SensorController } from '../controllers/sensor.controller';
+import { validate } from '../middlewares/validate';
+import { criarSensorSchema, atualizarSensorSchema } from '../schemas/index';
 
 const router = Router();
 

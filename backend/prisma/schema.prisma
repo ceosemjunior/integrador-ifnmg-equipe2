@@ -1,12 +1,12 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
 
 datasource db {
   provider = "sqlite"
-}
-
-generator client {
-  provider = "prisma-client-js"
 }
 
 model Usuario {
@@ -43,6 +43,11 @@ enum tipoSensor {
 enum tipoAlerta {
   Atencao
   Critico
+}
+
+enum DirecaoAlerta {
+  ABAIXO
+  ACIMA
 }
 
 enum tipoDispositivo {
@@ -90,12 +95,13 @@ model Plantacao {
 }
 
 model Sensor {
-  id        String       @id @default(uuid())
+  id        String        @id @default(uuid())
   nome      String // Ex: "Sensor de Temperatura DHT11"
   tipo      tipoSensor
   unidade   String // Ex: "°C", "%", "Lux"
-  status    statusSensor @default(Inativo)
-  criado_em DateTime     @default(now())
+  status    statusSensor  @default(Inativo)
+  direcao   DirecaoAlerta @default(ABAIXO)
+  criado_em DateTime      @default(now())
 
   plantacoes PlantacaoSensor? // permite o sensor não estar em nenhuma plantação
 
@@ -109,7 +115,7 @@ model PlantacaoSensor {
   limite_atencao Float
   limite_critico Float
 
-  plantacao Plantacao @relation(fields: [plantacao_id], references: [id], onDelete: Restrict)
+  plantacao Plantacao @relation(fields: [plantacao_id], references: [id], onDelete: Cascade)
   sensor    Sensor    @relation(fields: [sensor_id], references: [id]) // Restrict: não deletar sensor em uso
 
   @@unique([plantacao_id, sensor_id]) // Impede duplicar o mesmo sensor na mesma plantação
@@ -143,7 +149,7 @@ model Alerta {
 
   leitura   Leitura   @relation(fields: [leitura_id], references: [id], onDelete: Cascade)
   usuario   Usuario   @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
-  plantacao Plantacao @relation(fields: [plantacao_id], references: [id])
+  plantacao Plantacao @relation(fields: [plantacao_id], references: [id], onDelete: Cascade)
 
   @@map("alerta")
 }

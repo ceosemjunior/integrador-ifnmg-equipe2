@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { statusDispositivo } from '@prisma/client';
-import { DispositivoModel } from '../models/dispositivo.model.js';
-import { findOrThrow } from '../utils/find-or-throw.js';
-import { parseId } from '../utils/parse-id.js';
+import { statusDispositivo } from '../../generated/prisma/client';
+import { DispositivoModel } from '../models/dispositivo.model';
+import { findOrThrow } from '../utils/find-or-throw';
+import { parseId } from '../utils/parse-id';
 
 export const DispositivoController = {
   async criar(req: Request, res: Response, _next: NextFunction) {
