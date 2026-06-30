@@ -1,6 +1,6 @@
 import { SerialPort } from 'serialport';
 import { ReadlineParser } from '@serialport/parser-readline';
-import { env } from './env/index.js';
+import { env } from './env/index';
 
 const caminhoPortaSerial = env.SERIAL_PORT;
 const urlBackend = env.BACKEND_URL;
