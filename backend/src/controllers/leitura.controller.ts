@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { LeituraService } from '../services/leitura.service.js';
-import { parseId } from '../utils/parse-id.js';
+import { LeituraService } from '../services/leitura.service';
+import { parseId } from '../utils/parse-id';
 
 export const LeituraController = {
   async criar(req: Request, res: Response, _next: NextFunction) {

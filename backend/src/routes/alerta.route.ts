@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { AlertaController } from '../controllers/alerta.controller.js';
-import { validate } from '../middlewares/validate.js';
-import { criarAlertaSchema } from '../schemas/index.js';
+import { AlertaController } from '../controllers/alerta.controller';
+import { validate } from '../middlewares/validate';
+import { criarAlertaSchema } from '../schemas/index';
 
 const router = Router();
 

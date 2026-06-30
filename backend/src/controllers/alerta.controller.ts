@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { AlertaService } from '../services/alerta.service.js';
-import { enviarWhatsApp } from '../services/whatsapp.service.js';
-import { parseId } from '../utils/parse-id.js';
+import { AlertaService } from '../services/alerta.service';
+import { enviarWhatsApp } from '../services/whatsapp.service';
+import { parseId } from '../utils/parse-id';
 
 export const AlertaController = {
   async criar(req: Request, res: Response, _next: NextFunction) {

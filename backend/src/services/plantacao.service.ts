@@ -1,7 +1,7 @@
-import { statusDispositivo } from '@prisma/client';
-import { PlantacaoModel } from '../models/plantacao.model.js';
-import { DispositivoModel } from '../models/dispositivo.model.js';
-import { findOrThrow } from '../utils/find-or-throw.js';
+import { statusDispositivo } from '../../generated/prisma/client';
+import { PlantacaoModel } from '../models/plantacao.model';
+import { DispositivoModel } from '../models/dispositivo.model';
+import { findOrThrow } from '../utils/find-or-throw';
 
 interface CriarPlantacaoDados {
   usuario_id: string;

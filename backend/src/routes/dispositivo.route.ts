@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { DispositivoController } from '../controllers/dispositivo.controller.js';
-import { validate } from '../middlewares/validate.js';
-import { criarDispositivoSchema, atualizarDispositivoSchema } from '../schemas/index.js';
+import { DispositivoController } from '../controllers/dispositivo.controller';
+import { validate } from '../middlewares/validate';
+import { criarDispositivoSchema, atualizarDispositivoSchema } from '../schemas/index';
 
 const router = Router();
 

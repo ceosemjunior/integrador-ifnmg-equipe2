@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { LeituraController } from '../controllers/leitura.controller.js';
-import { validate } from '../middlewares/validate.js';
-import { criarLeituraSchema, atualizarLeituraSchema } from '../schemas/index.js';
+import { LeituraController } from '../controllers/leitura.controller';
+import { validate } from '../middlewares/validate';
+import { criarLeituraSchema, atualizarLeituraSchema } from '../schemas/index';
 
 const router = Router();
 

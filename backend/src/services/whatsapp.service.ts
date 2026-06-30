@@ -1,4 +1,4 @@
-import { env } from '../env/index.js';
+import { env } from '../env/index';
 
 export async function enviarWhatsApp(mensagem: string): Promise<void> {
   const url = `https://api.callmebot.com/whatsapp.php?phone=${env.CALLMEBOT_PHONE}&text=${encodeURIComponent(mensagem)}&apikey=${env.CALLMEBOT_APIKEY}`;

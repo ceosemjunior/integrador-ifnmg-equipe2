@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { tipoDispositivo, statusDispositivo, tipoSensor, statusSensor, tipoAlerta, DirecaoAlerta } from '@prisma/client';
+import { tipoDispositivo, statusDispositivo, tipoSensor, statusSensor, tipoAlerta, DirecaoAlerta } from '../../generated/prisma/client';
 
 export const criarUsuarioSchema = z.object({
   nome: z.string().min(3, 'Nome deve ter no mínimo 3 caracteres'),

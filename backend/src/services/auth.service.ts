@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { UsuarioModel } from '../models/usuario.model.js';
-import { env } from '../env/index.js';
+import { UsuarioModel } from '../models/usuario.model';
+import { env } from '../env/index';
 
 export const AuthService = {
   async login(email: string, senha: string) {

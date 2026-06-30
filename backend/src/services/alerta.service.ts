@@ -1,10 +1,10 @@
-import { tipoAlerta, DirecaoAlerta } from '@prisma/client';
-import { AlertaModel } from '../models/alerta.model.js';
-import { LeituraModel } from '../models/leitura.model.js';
-import { PlantacaoModel } from '../models/plantacao.model.js';
-import { PlantacaoSensorModel } from '../models/plantacao-sensor.model.js';
-import { findOrThrow } from '../utils/find-or-throw.js';
-import { enviarWhatsApp } from './whatsapp.service.js';
+import { tipoAlerta, DirecaoAlerta } from '../../generated/prisma/client';
+import { AlertaModel } from '../models/alerta.model';
+import { LeituraModel } from '../models/leitura.model';
+import { PlantacaoModel } from '../models/plantacao.model';
+import { PlantacaoSensorModel } from '../models/plantacao-sensor.model';
+import { findOrThrow } from '../utils/find-or-throw';
+import { enviarWhatsApp } from './whatsapp.service';
 
 interface CriarAlertaDados {
   leitura_id: string;

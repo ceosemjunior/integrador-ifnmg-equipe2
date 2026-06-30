@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
-import { Prisma } from '@prisma/client';
-import { UsuarioModel } from "../models/usuario.model.js";
-import { findOrThrow } from '../utils/find-or-throw.js';
+import { Prisma } from '../../generated/prisma/client';
+import { UsuarioModel } from "../models/usuario.model";
+import { findOrThrow } from '../utils/find-or-throw';
 
 export const UsuarioService = {
   async criar(dados: Prisma.UsuarioCreateInput) {

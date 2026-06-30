@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
-import prisma from "../src/lib/prisma.js";
-import { tipoSensor, statusSensor, tipoDispositivo, statusDispositivo, DirecaoAlerta } from "@prisma/client";
+import { prisma } from "../src/lib/prisma";
+import { tipoSensor, statusSensor, tipoDispositivo, statusDispositivo, DirecaoAlerta } from "../generated/prisma/client";
 
 const INTERVALO_MINUTOS = 2;
 const DIAS_SIMULADOS = 90;

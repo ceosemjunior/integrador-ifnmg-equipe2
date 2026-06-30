@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
-import prisma from "../src/lib/prisma.js";
-import { tipoSensor, statusSensor, tipoDispositivo, statusDispositivo, tipoAlerta, DirecaoAlerta } from "@prisma/client";
+import { prisma } from "../src/lib/prisma";
+import { tipoSensor, statusSensor, tipoDispositivo, statusDispositivo, tipoAlerta, DirecaoAlerta } from "../generated/prisma/client";
 
 async function main() {
   console.log("🌱 Iniciando o seeding do banco de dados...");

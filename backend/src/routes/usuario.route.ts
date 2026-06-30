@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { UsuarioController } from '../controllers/usuario.controller.js';
-import { auth } from '../middlewares/auth.js';
-import { validate } from '../middlewares/validate.js';
-import { criarUsuarioSchema, atualizarUsuarioSchema } from '../schemas/index.js';
+import { UsuarioController } from '../controllers/usuario.controller';
+import { auth } from '../middlewares/auth';
+import { validate } from '../middlewares/validate';
+import { criarUsuarioSchema, atualizarUsuarioSchema } from '../schemas/index';
 
 const router = Router();
 

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { PlantacaoSensorService } from '../services/plantacao-sensor.service.js';
-import { parseId } from '../utils/parse-id.js';
+import { PlantacaoSensorService } from '../services/plantacao-sensor.service';
+import { parseId } from '../utils/parse-id';
 
 export const PlantacaoSensorController = {
   async criar(req: Request, res: Response, _next: NextFunction) {

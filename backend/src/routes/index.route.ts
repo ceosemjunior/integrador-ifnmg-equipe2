@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import authRoutes from './auth.route.js';
-import usuarioRoutes from './usuario.route.js';
-import dispositivoRoutes from './dispositivo.route.js';
-import plantacaoRoutes from './plantacao.route.js';
-import sensorRoutes from './sensor.route.js';
-import plantacaoSensorRoutes from './plantacao-sensor.route.js';
-import leituraRoutes from './leitura.route.js';
-import alertaRoutes from './alerta.route.js';
+import authRoutes from './auth.route';
+import usuarioRoutes from './usuario.route';
+import dispositivoRoutes from './dispositivo.route';
+import plantacaoRoutes from './plantacao.route';
+import sensorRoutes from './sensor.route';
+import plantacaoSensorRoutes from './plantacao-sensor.route';
+import leituraRoutes from './leitura.route';
+import alertaRoutes from './alerta.route';
 
 const router = Router();
 

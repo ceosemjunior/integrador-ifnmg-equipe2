@@ -1,8 +1,8 @@
-import { Prisma, tipoSensor } from '@prisma/client';
-import { AlertaService } from './alerta.service.js';
-import { LeituraModel } from '../models/leitura.model.js';
-import { PlantacaoSensorModel } from '../models/plantacao-sensor.model.js';
-import { findOrThrow } from '../utils/find-or-throw.js';
+import { Prisma, tipoSensor } from '../../generated/prisma/client';
+import { AlertaService } from './alerta.service';
+import { LeituraModel } from '../models/leitura.model';
+import { PlantacaoSensorModel } from '../models/plantacao-sensor.model';
+import { findOrThrow } from '../utils/find-or-throw';
 
 type CamposLeitura = Pick<Prisma.LeituraCreateInput, 'temperatura' | 'umidade_ar' | 'umidade_solo' | 'luminosidade'>;
 
