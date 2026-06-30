@@ -63,7 +63,6 @@ export const atualizarLeituraSchema = criarLeituraSchema.partial();
 export const criarAlertaSchema = z.object({
   leitura_id: z.uuid(),
   usuario_id: z.uuid(),
-  plantacao_id: z.uuid(),
   tipo: z.enum(tipoAlerta),
   mensagem: z.string(),
   notificacao: z.boolean().optional(),
