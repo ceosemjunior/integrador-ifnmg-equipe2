@@ -66,10 +66,10 @@ async function main() {
       id: "d05f1635-3743-48a8-8bb0-1c0b50c3cb7f",
       usuario_id: user1.id,
       dispositivo_id: disp01.id,
-      nome: "Lote B - Weed",
-      tipo: "Herbácea",
+      nome: "Lote B - Morango 🍓",
+      tipo: "Fruticultura",
       data_inicio: new Date("2026-06-01T10:00:00Z"),
-      descricao: "Maconha da boa",
+      descricao: "A vida não é um morango",
     },
   });
 
@@ -87,7 +87,7 @@ async function main() {
       id: "3b0edf35-d1a7-4d88-8b62-d9b7b8531cc6",
       usuario_id: user2.id,
       dispositivo_id: disp02.id,
-      nome: "Lote A - Cereja",
+      nome: "Lote A - Cereja 🍒",
       tipo: "Fruticultura",
       data_inicio: new Date("2026-05-15T08:00:00Z"),
       descricao: "Área experimental de cultivo monitorada",
