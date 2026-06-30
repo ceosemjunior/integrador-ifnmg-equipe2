@@ -22,7 +22,7 @@ export const AlertaModel = {
 
   async buscarPorPlantacao(plantacao_id: string) {
     return await prisma.alerta.findMany({
-      where: { plantacao_id },
+      where: { leitura: { plantacao_id } },
       orderBy: { gerado_em: 'desc' },
     });
   },
@@ -48,14 +48,14 @@ export const AlertaModel = {
 
   async buscarResumo(plantacao_id: string) {
     const [total, atencao, critico, ultimos7Dias, ultimo] = await Promise.all([
-      prisma.alerta.count({ where: { plantacao_id } }),
-      prisma.alerta.count({ where: { plantacao_id, tipo: 'Atencao' } }),
-      prisma.alerta.count({ where: { plantacao_id, tipo: 'Critico' } }),
+      prisma.alerta.count({ where: { leitura: { plantacao_id } } }),
+      prisma.alerta.count({ where: { leitura: { plantacao_id }, tipo: 'Atencao' } }),
+      prisma.alerta.count({ where: { leitura: { plantacao_id }, tipo: 'Critico' } }),
       prisma.alerta.count({
-        where: { plantacao_id, gerado_em: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } },
+        where: { leitura: { plantacao_id }, gerado_em: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } },
       }),
       prisma.alerta.findFirst({
-        where: { plantacao_id },
+        where: { leitura: { plantacao_id } },
         orderBy: { gerado_em: 'desc' },
         select: { tipo: true, mensagem: true, gerado_em: true },
       }),

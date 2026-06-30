@@ -131,7 +131,6 @@ async function main() {
     data: {
       leitura_id: leituraCritica.id,
       usuario_id: user2.id,
-      plantacao_id: plantacao2.id,
       tipo: tipoAlerta.Critico,
       mensagem: "Alerta Crítico: Temperatura severa detectada: (36.5°C). Risco de quebra de estresse térmico.",
     },

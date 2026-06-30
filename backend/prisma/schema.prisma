@@ -67,7 +67,6 @@ model Dispositivo {
   status    statusDispositivo @default(Inativo)
   criado_em DateTime          @default(now())
 
-  // Relacionamento um-para-um com Plantação
   plantacao Plantacao?
 
   @@map("dispositivo")
@@ -76,7 +75,7 @@ model Dispositivo {
 model Plantacao {
   id                   String    @id @default(uuid())
   usuario_id           String
-  dispositivo_id       String    @unique // FK: Garante apenas 1 dispositivo por plantação
+  dispositivo_id       String    @unique
   nome                 String
   tipo                 String
   data_inicio          DateTime
@@ -89,7 +88,6 @@ model Plantacao {
   dispositivo Dispositivo       @relation(fields: [dispositivo_id], references: [id])
   sensores    PlantacaoSensor[]
   leituras    Leitura[]
-  alertas     Alerta[] // Relacionamento direto para facilitar a listagem de alertas por cultivo
 
   @@map("plantacao")
 }
@@ -116,7 +114,7 @@ model PlantacaoSensor {
   limite_critico Float
 
   plantacao Plantacao @relation(fields: [plantacao_id], references: [id], onDelete: Cascade)
-  sensor    Sensor    @relation(fields: [sensor_id], references: [id]) // Restrict: não deletar sensor em uso
+  sensor    Sensor    @relation(fields: [sensor_id], references: [id])
 
   @@unique([plantacao_id, sensor_id]) // Impede duplicar o mesmo sensor na mesma plantação
   @@map("plantacao_sensor")
@@ -138,18 +136,16 @@ model Leitura {
 }
 
 model Alerta {
-  id           String     @id @default(uuid())
-  leitura_id   String
-  usuario_id   String
-  plantacao_id String
-  tipo         tipoAlerta
-  mensagem     String
-  notificacao  Boolean    @default(false)
-  gerado_em    DateTime   @default(now())
+  id          String     @id @default(uuid())
+  leitura_id  String
+  usuario_id  String
+  tipo        tipoAlerta
+  mensagem    String
+  notificacao Boolean    @default(false)
+  gerado_em   DateTime   @default(now())
 
-  leitura   Leitura   @relation(fields: [leitura_id], references: [id], onDelete: Cascade)
-  usuario   Usuario   @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
-  plantacao Plantacao @relation(fields: [plantacao_id], references: [id], onDelete: Cascade)
+  leitura Leitura @relation(fields: [leitura_id], references: [id], onDelete: Cascade)
+  usuario Usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
 
   @@map("alerta")
 }

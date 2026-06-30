@@ -39,7 +39,7 @@ export const LeituraModel = {
         _avg: { temperatura: true, umidade_solo: true, umidade_ar: true, luminosidade: true },
       }),
       prisma.leitura.count({ where: { plantacao_id } }),
-      prisma.alerta.count({ where: { plantacao_id } }),
+      prisma.alerta.count({ where: { leitura: { plantacao_id } } }),
     ]);
 
     return { ultima, medias: agregado._avg, total_leituras: totalLeituras, total_alertas: totalAlertas };

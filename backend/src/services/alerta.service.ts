@@ -9,7 +9,6 @@ import { enviarWhatsApp } from './whatsapp.service';
 interface CriarAlertaDados {
   leitura_id: string;
   usuario_id: string;
-  plantacao_id: string;
   tipo: tipoAlerta;
   mensagem: string;
   notificacao?: boolean;
@@ -23,7 +22,6 @@ export const AlertaService = {
       notificacao: dados.notificacao ?? false,
       leitura: { connect: { id: dados.leitura_id } },
       usuario: { connect: { id: dados.usuario_id } },
-      plantacao: { connect: { id: dados.plantacao_id } },
     };
     return await AlertaModel.criar(alertaDados);
   },
@@ -99,7 +97,6 @@ export const AlertaService = {
       alertasParaCriar.map(alerta => ({
         leitura_id,
         usuario_id: plantacao.usuario_id,
-        plantacao_id,
         tipo: alerta.tipo,
         mensagem: alerta.mensagem,
       }))
