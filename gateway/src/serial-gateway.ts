@@ -10,6 +10,7 @@ const timeoutOfflineMs = 1_500_000; // TEST: 20_000 pra debugar
 
 let ultimaPlantacaoId = '';
 let timerOffline: NodeJS.Timeout | null = null;
+let ultimaLinhaProcessada = '';
 
 async function enviarParaBackend(dadosSensor: any): Promise<void> {
   try {
@@ -116,6 +117,10 @@ function conectarSerial(): void {
   });
 
   parser.on('data', async (linha: string) => {
+    // FIXME: hotfix temporário pra um bug q não sei a causa exata: serialport v13 ReadlineParser emite a mesma linha multiplas vezes
+    if (linha === ultimaLinhaProcessada) return;
+    ultimaLinhaProcessada = linha;
+
     const dadosSensor = processarDadosArduino(linha);
 
     if (dadosSensor) {
