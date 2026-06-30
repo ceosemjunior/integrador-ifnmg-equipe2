@@ -7,7 +7,7 @@ export function errorHandler(err: any, _req: Request, res: Response, _next: Next
       return res.status(409).json({ erro: 'Já existe um registro com este valor único.' });
     }
     if (err.code === 'P2003') {
-      return res.status(409).json({ erro: 'Registro possui vínculos com outros registros. Remova-os primeiro.' });
+      return res.status(409).json({ erro: 'Chave estrangeira inválida.' });
     }
     if (err.code === 'P2014') {
       return res.status(409).json({ erro: 'Este sensor já está vinculado a uma plantação.' });
