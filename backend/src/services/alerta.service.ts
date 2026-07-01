@@ -1,4 +1,4 @@
-import { tipoAlerta, DirecaoAlerta } from '../../generated/prisma/client';
+import { tipoAlerta, direcaoAlerta } from '../../generated/prisma/client';
 import { AlertaModel } from '../models/alerta.model';
 import { LeituraModel } from '../models/leitura.model';
 import { PlantacaoModel } from '../models/plantacao.model';
@@ -68,7 +68,7 @@ export const AlertaService = {
 
       if (typeof valor !== 'number') continue;
 
-      const ehMenorQue = vinculo.sensor.direcao === DirecaoAlerta.ABAIXO;
+      const ehMenorQue = vinculo.sensor.direcao === direcaoAlerta.ABAIXO;
 
       const excedeuCritico = ehMenorQue
         ? valor <= vinculo.limite_critico

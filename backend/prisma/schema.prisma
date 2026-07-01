@@ -45,7 +45,7 @@ enum tipoAlerta {
   Critico
 }
 
-enum DirecaoAlerta {
+enum direcaoAlerta {
   ABAIXO
   ACIMA
 }
@@ -98,7 +98,7 @@ model Sensor {
   tipo      tipoSensor
   unidade   String // Ex: "°C", "%", "Lux"
   status    statusSensor  @default(Inativo)
-  direcao   DirecaoAlerta @default(ABAIXO)
+  direcao   direcaoAlerta @default(ABAIXO)
   criado_em DateTime      @default(now())
 
   plantacoes PlantacaoSensor? // permite o sensor não estar em nenhuma plantação

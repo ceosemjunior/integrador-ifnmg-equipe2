@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { tipoDispositivo, statusDispositivo, tipoSensor, statusSensor, tipoAlerta, DirecaoAlerta } from '../../generated/prisma/client';
+import { tipoDispositivo, statusDispositivo, tipoSensor, statusSensor, tipoAlerta, direcaoAlerta } from '../../generated/prisma/client';
 
 export const criarUsuarioSchema = z.object({
   nome: z.string().min(3, 'Nome deve ter no mínimo 3 caracteres'),
@@ -36,7 +36,7 @@ export const criarSensorSchema = z.object({
   tipo: z.enum(tipoSensor),
   unidade: z.string(),
   status: z.enum(statusSensor).optional(),
-  direcao: z.enum(DirecaoAlerta).optional(),
+  direcao: z.enum(direcaoAlerta).optional(),
 });
 
 export const atualizarSensorSchema = criarSensorSchema.partial();

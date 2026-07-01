@@ -1,11 +1,11 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "../src/lib/prisma";
-import { tipoSensor, statusSensor, tipoDispositivo, statusDispositivo, DirecaoAlerta } from "../generated/prisma/client";
+import { tipoSensor, statusSensor, tipoDispositivo, statusDispositivo, direcaoAlerta} from "../generated/prisma/client";
 
-const INTERVALO_MINUTOS = 2;
-const DIAS_SIMULADOS = 90;
-const TOTAL_CICLOS = (DIAS_SIMULADOS * 24 * 60) / INTERVALO_MINUTOS;
-const TAMANHO_BLOCO = 5000;
+const intervaloMinutos = 2;
+const diasSimulados = 90;
+const totalCiclos = (diasSimulados * 24 * 60) / intervaloMinutos;
+const tamanhoBloco = 5000;
 
 function gerarValorMetricoAleatorio(min: number, max: number): number {
   return parseFloat((Math.random() * (max - min) + min).toFixed(1));
@@ -45,7 +45,7 @@ async function main() {
   });
 
   const sTemp = await prisma.sensor.create({
-    data: { id: "c3d4e5f6-a7b8-4c9d-ae1f-2a3b4c5d6e7f", nome: "DHT22 - Sensor de Temperatura", tipo: tipoSensor.temperatura, unidade: "°C", status: statusSensor.Ativo, direcao: DirecaoAlerta.ACIMA },
+    data: { id: "c3d4e5f6-a7b8-4c9d-ae1f-2a3b4c5d6e7f", nome: "DHT22 - Sensor de Temperatura", tipo: tipoSensor.temperatura, unidade: "°C", status: statusSensor.Ativo, direcao: direcaoAlerta.ACIMA },
   });
 
   const sSolo = await prisma.sensor.create({
@@ -110,18 +110,18 @@ async function main() {
 
   const idsPlantacoes = [plantacao1.id, plantacao2.id];
   const dataInicioSimulacao = new Date();
-  dataInicioSimulacao.setDate(dataInicioSimulacao.getDate() - DIAS_SIMULADOS);
+  dataInicioSimulacao.setDate(dataInicioSimulacao.getDate() - diasSimulados);
 
   console.log("\nMétricas de Carga Calculadas:");
-  console.log(`- Registros por plantação: ${TOTAL_CICLOS}`);
-  console.log(`- Carga consolidada total na tabela Leitura: ${TOTAL_CICLOS * idsPlantacoes.length} registros.`);
+  console.log(`- Registros por plantação: ${totalCiclos}`);
+  console.log(`- Carga consolidada total na tabela Leitura: ${totalCiclos * idsPlantacoes.length} registros.`);
 
   for (const plantacaoId of idsPlantacoes) {
     console.log(`\nInjetando dados em lote para Plantacao ID: ${plantacaoId}...`);
     const blocoDeDados: any[] = [];
 
-    for (let i = 0; i < TOTAL_CICLOS; i++) {
-      const dataHoraLeitura = new Date(dataInicioSimulacao.getTime() + i * INTERVALO_MINUTOS * 60 * 1000);
+    for (let i = 0; i < totalCiclos; i++) {
+      const dataHoraLeitura = new Date(dataInicioSimulacao.getTime() + i * intervaloMinutos * 60 * 1000);
 
       const leitura: any = { plantacao_id: plantacaoId, data_hora: dataHoraLeitura };
       if (plantacaoId === plantacao1.id) {
@@ -133,7 +133,7 @@ async function main() {
       }
       blocoDeDados.push(leitura);
 
-      if (blocoDeDados.length === TAMANHO_BLOCO || i === TOTAL_CICLOS - 1) {
+      if (blocoDeDados.length === tamanhoBloco || i === totalCiclos - 1) {
         await prisma.leitura.createMany({ data: blocoDeDados });
         console.log(`Bloco de ${blocoDeDados.length} leituras inserido.`);
         blocoDeDados.length = 0;
