@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "../src/lib/prisma";
-import { tipoSensor, statusSensor, tipoDispositivo, statusDispositivo, tipoAlerta, DirecaoAlerta } from "../generated/prisma/client";
+import { tipoSensor, statusSensor, tipoDispositivo, statusDispositivo, tipoAlerta, direcaoAlerta} from "../generated/prisma/client";
 
 async function main() {
   console.log("🌱 Iniciando o seeding do banco de dados...");
@@ -36,7 +36,7 @@ async function main() {
   });
 
   const sTemp = await prisma.sensor.create({
-    data: { id: "c3d4e5f6-a7b8-4c9d-ae1f-2a3b4c5d6e7f", nome: "DHT22 - Sensor de Temperatura", tipo: tipoSensor.temperatura, unidade: "°C", status: statusSensor.Ativo, direcao: DirecaoAlerta.ACIMA },
+    data: { id: "c3d4e5f6-a7b8-4c9d-ae1f-2a3b4c5d6e7f", nome: "DHT22 - Sensor de Temperatura", tipo: tipoSensor.temperatura, unidade: "°C", status: statusSensor.Ativo, direcao: direcaoAlerta.ACIMA },
   });
 
   const sSolo = await prisma.sensor.create({

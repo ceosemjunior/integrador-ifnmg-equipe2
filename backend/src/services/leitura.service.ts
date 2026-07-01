@@ -10,7 +10,7 @@ interface CriarLeituraDados extends CamposLeitura {
   plantacao_id: string;
 }
 
-const TIPO_PARA_CAMPO: Record<tipoSensor, keyof CamposLeitura> = {
+const tipoParaCampo: Record<tipoSensor, keyof CamposLeitura> = {
   [tipoSensor.temperatura]: 'temperatura',
   [tipoSensor.umidade_ar]: 'umidade_ar',
   [tipoSensor.umidade_solo]: 'umidade_solo',
@@ -29,7 +29,7 @@ export const LeituraService = {
     };
 
     for (const vinculo of vinculos) {
-      const campoFonte = TIPO_PARA_CAMPO[vinculo.sensor.tipo as tipoSensor];
+      const campoFonte = tipoParaCampo[vinculo.sensor.tipo as tipoSensor];
       if (campoFonte && payload[campoFonte] !== undefined) {
         dadosFiltrados[campoFonte] = payload[campoFonte];
       }
