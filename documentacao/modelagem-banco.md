@@ -25,7 +25,6 @@ Representa os responsáveis pelo gerenciamento das informações cadastradas no 
 - ID
 - Nome
 - E-mail
-- CPF
 - Telefone
 - Senha criptografada
 
