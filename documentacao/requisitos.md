@@ -2,44 +2,49 @@
 
 ## Objetivo
 
-O AgroSensor é um sistema de monitoramento climático voltado para agricultura familiar no Vale do Jequitinhonha. O sistema utiliza sensores conectados ao Arduino Mega 2560 para coletar dados ambientais e disponibilizá-los em dashboards para apoio à tomada de decisão agrícola.
+O AgroSensor é um sistema de monitoramento climático desenvolvido para apoiar a agricultura familiar por meio da coleta automática de dados ambientais utilizando Internet das Coisas (IoT). A solução integra sensores conectados a um Arduino Mega 2560, um gateway de comunicação serial e um backend responsável pelo processamento, armazenamento e gerenciamento das informações.
 
 ---
-## Requisitos Funcionais
+
+# Requisitos Funcionais
 
 | Nº | Requisito Funcional |
-|---|---|
-| RF01 | O usuário deve poder se cadastrar no sistema informando nome, e-mail, senha, CPF e telefone |
-| RF02 | O usuário deve poder fazer login com e-mail e senha |
-| RF03 | O usuário deve poder fazer logout |
-| RF04 | O usuário deve poder editar e excluir seu perfil |
-| RF05 | O usuário deve poder cadastrar um ou mais tipos de plantação |
-| RF06 | O usuário deve poder editar e excluir suas plantações |
-| RF07 | O usuário deve poder escolher quais sensores serão associados a cada plantação |
-| RF08 | O usuário deve poder definir os limites de atenção e crítico de cada sensor por plantação |
-| RF09 | O sistema deve exibir os dados dos sensores em tempo real no dashboard |
-| RF10 | O sistema deve classificar cada leitura como "ideal", "atenção" ou "crítico" automaticamente com base nos limites definidos pelo usuário |
-| RF11 | O sistema deve gerar um alerta quando uma leitura atingir o limite de atenção ou crítico |
-| RF12 | O sistema deve notificar o usuário via WhatsApp quando um alerta crítico for gerado; caso o WhatsApp não esteja disponível, a notificação deve ser enviada via notificação push no dispositivo do usuário |
-| RF13 | O usuário deve visualizar gráficos diários, semanais e mensais dos dados coletados por sensor |
-| RF14 | O usuário deve poder visualizar o histórico completo de alertas recebidos |
-| RF16 | O sistema deve suportar o cadastro de novos tipos de sensores sem necessidade de alteração estrutural |
-| RF17 | O usuário deve poder visualizar a lista de dispositivos e sensores disponíveis no momento do cadastro de uma plantação |
+|----|----------------------|
+| RF01 | O sistema deve permitir o cadastro de usuários informando nome, e-mail, CPF, telefone e senha. |
+| RF02 | O sistema deve permitir a autenticação de usuários utilizando e-mail e senha. |
+| RF03 | O sistema deve permitir que usuários autenticados editem seus dados cadastrais. |
+| RF04 | O sistema deve permitir a exclusão de usuários cadastrados. |
+| RF05 | O sistema deve permitir o cadastro de plantações associadas ao usuário. |
+| RF06 | O sistema deve permitir editar e remover plantações cadastradas. |
+| RF07 | O sistema deve permitir cadastrar dispositivos responsáveis pelo envio das leituras ambientais. |
+| RF08 | O sistema deve permitir cadastrar sensores ambientais disponíveis no sistema. |
+| RF09 | O sistema deve permitir associar sensores a uma plantação. |
+| RF10 | O usuário deve poder definir valores mínimos e máximos para cada sensor associado à plantação. |
+| RF11 | O Gateway deve receber automaticamente as leituras enviadas pelo Arduino por comunicação serial. |
+| RF12 | O Gateway deve validar as informações recebidas antes de encaminhá-las ao backend. |
+| RF13 | O backend deve armazenar automaticamente as leituras recebidas no banco de dados. |
+| RF14 | O sistema deve classificar automaticamente cada leitura conforme os limites configurados para a plantação. |
+| RF15 | O sistema deve gerar alertas automaticamente quando uma leitura ultrapassar os limites estabelecidos. |
+| RF16 | O sistema deve armazenar o histórico de leituras e alertas gerados. |
+| RF17 | O sistema deve enviar notificações via WhatsApp quando configurado para alertas críticos. |
+| RF18 | O sistema deve disponibilizar operações REST para gerenciamento de usuários, plantações, sensores, dispositivos, leituras e alertas. |
+
 ---
 
-## Requisitos Não Funcionais
+# Requisitos Não Funcionais
 
 | Nº | Requisito Não Funcional |
-|---|---|
-| RNF01 | O sistema deve atualizar os dados dos sensores a cada 2 minutos |
-| RNF02 | O sistema deve ser responsivo, funcionando em dispositivos móveis e desktop |
-| RNF03 | As senhas dos usuários devem ser armazenadas com criptografia |
-| RNF04 | O sistema deve ser capaz de armazenar até 5.040 leituras por semana sem degradação de desempenho |
-| RNF05 | O banco de dados SQLite deve ser capaz de realizar consultas no histórico de leituras em menos de 5 segundos |
-| RNF06 | O sistema deve registrar data e hora precisas de todas as leituras realizadas |
-| RNF07 | O backend deve ser desenvolvido em Node.js seguindo arquitetura em camadas |
-| RNF08 | O sistema deve ser escalável para suportar múltiplos dispositivos Arduino e novos tipos de sensores |
-| RNF09 | O frontend deve ser desenvolvido em React garantindo compatibilidade com navegadores modernos |
-| RNF10 | O sistema deve ser executado localmente sem necessidade de conexão com internet, exceto para envio de notificações |
-| RNF11 | As notificações de alerta devem ser enviadas ao usuário assim que o sistema identificar uma leitura crítica, respeitando o tempo de resposta do serviço de notificação utilizado |
-| RNF12 | O gateway deve receber os dados do Arduino pela porta serial e enviá-los para o backend via API REST |
+|----|--------------------------|
+| RNF01 | O backend deve ser desenvolvido utilizando Node.js e TypeScript. |
+| RNF02 | A API deve seguir o padrão arquitetural REST. |
+| RNF03 | O sistema deve utilizar arquitetura modular organizada em controladores, serviços, modelos, rotas, middlewares, schemas e utilitários. |
+| RNF04 | As senhas dos usuários devem ser armazenadas utilizando criptografia com bcrypt. |
+| RNF05 | A autenticação dos usuários deve utilizar JSON Web Token (JWT). |
+| RNF06 | As entradas da aplicação devem ser validadas utilizando Zod. |
+| RNF07 | O sistema deve utilizar Prisma ORM como camada de acesso ao banco de dados. |
+| RNF08 | O banco de dados utilizado deve ser o SQLite. |
+| RNF09 | O Gateway deve comunicar-se com o Arduino utilizando comunicação serial USB. |
+| RNF10 | A comunicação entre Gateway e Backend deve ocorrer por meio de requisições HTTP para a API REST. |
+| RNF11 | O sistema deve registrar automaticamente data e horário de todas as leituras armazenadas. |
+| RNF12 | A arquitetura deve permitir a inclusão de novos sensores e dispositivos sem necessidade de alterações significativas na estrutura da aplicação. |
+| RNF13 | O sistema deve ser executado localmente, necessitando de acesso à internet apenas para o envio de notificações via WhatsApp. |
