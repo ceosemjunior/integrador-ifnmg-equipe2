@@ -10,7 +10,7 @@ O AgroSensor é um sistema de monitoramento climático desenvolvido para apoiar 
 
 | Nº | Requisito Funcional |
 |----|----------------------|
-| RF01 | O sistema deve permitir o cadastro de usuários informando nome, e-mail, CPF, telefone e senha. |
+| RF01 | O sistema deve permitir o cadastro de usuários informando nome, e-mail, telefone e senha. |
 | RF02 | O sistema deve permitir a autenticação de usuários utilizando e-mail e senha. |
 | RF03 | O sistema deve permitir que usuários autenticados editem seus dados cadastrais. |
 | RF04 | O sistema deve permitir a exclusão de usuários cadastrados. |
