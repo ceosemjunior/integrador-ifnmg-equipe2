@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { AlertaService } from '../services/alerta.service.js';
-import { parseId } from '../utils/parse-id.js';
+import { AlertaService } from '../services/alerta.service';
+import { enviarWhatsApp } from '../services/whatsapp.service';
+import { parseId } from '../utils/parse-id';
 
 export const AlertaController = {
   async criar(req: Request, res: Response, _next: NextFunction) {
@@ -29,14 +30,33 @@ export const AlertaController = {
     return res.status(200).json(alertas);
   },
 
-  async buscarTodos(_req: Request, res: Response, _next: NextFunction) {
-    const alertas = await AlertaService.buscarTodos();
+  async buscarTodos(req: Request, res: Response, _next: NextFunction) {
+    const pagina = Number(req.query.pagina) || undefined;
+    const limite = Number(req.query.limite) || undefined;
+    const alertas = await AlertaService.buscarTodos(pagina, limite);
     return res.status(200).json(alertas);
+  },
+
+  async buscarResumo(req: Request, res: Response, _next: NextFunction) {
+    const plantacao_id = parseId(req, 'plantacao_id');
+    const resumo = await AlertaService.buscarResumo(plantacao_id);
+    return res.status(200).json(resumo);
   },
 
   async deletar(req: Request, res: Response, _next: NextFunction) {
     const id = parseId(req);
     const resultado = await AlertaService.deletar(id);
     return res.status(200).json(resultado);
+  },
+
+  async notificarOffline(req: Request, res: Response, _next: NextFunction) {
+    const { plantacao_id, mensagem } = req.body;
+
+    if (!plantacao_id || !mensagem) {
+      return res.status(400).json({ erro: 'plantacao_id e mensagem são obrigatórios.' });
+    }
+
+    await enviarWhatsApp(mensagem);
+    return res.status(200).json({ mensagem: 'Notificação offline enviada com sucesso.' });
   },
 };

@@ -1,5 +1,5 @@
-import { prisma } from '../lib/prisma.js';
-import { Prisma, tipoSensor } from '@prisma/client';
+import { prisma } from '../lib/prisma';
+import { Prisma, tipoSensor } from '../../generated/prisma/client';
 
 export const SensorModel = {
   async criar(data: Prisma.SensorCreateInput) {

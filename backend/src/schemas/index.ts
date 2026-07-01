@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { tipoDispositivo, statusDispositivo, tipoSensor, statusSensor, tipoAlerta } from '@prisma/client';
+import { tipoDispositivo, statusDispositivo, tipoSensor, statusSensor, tipoAlerta, DirecaoAlerta } from '../../generated/prisma/client';
 
 export const criarUsuarioSchema = z.object({
   nome: z.string().min(3, 'Nome deve ter no mínimo 3 caracteres'),
@@ -36,6 +36,7 @@ export const criarSensorSchema = z.object({
   tipo: z.enum(tipoSensor),
   unidade: z.string(),
   status: z.enum(statusSensor).optional(),
+  direcao: z.enum(DirecaoAlerta).optional(),
 });
 
 export const atualizarSensorSchema = criarSensorSchema.partial();
@@ -50,11 +51,11 @@ export const criarPlantacaoSensorSchema = z.object({
 export const atualizarPlantacaoSensorSchema = criarPlantacaoSensorSchema.partial();
 
 export const criarLeituraSchema = z.object({
-  plantacao_id: z.uuid().optional(),
-  umidade_solo: z.number().optional(),
-  umidade_ar: z.number().optional(),
-  temperatura: z.number().optional(),
-  luminosidade: z.number().optional(),
+  plantacao_id: z.uuid('ID da plantação deve ser um UUID válido'),
+  umidade_solo: z.number().min(0).max(100).optional(),
+  umidade_ar: z.number().min(0).max(100).optional(),
+  temperatura: z.number().min(-40).max(80).optional(),
+  luminosidade: z.number().min(0).max(100).optional(),
 });
 
 export const atualizarLeituraSchema = criarLeituraSchema.partial();
@@ -62,7 +63,6 @@ export const atualizarLeituraSchema = criarLeituraSchema.partial();
 export const criarAlertaSchema = z.object({
   leitura_id: z.uuid(),
   usuario_id: z.uuid(),
-  plantacao_id: z.uuid(),
   tipo: z.enum(tipoAlerta),
   mensagem: z.string(),
   notificacao: z.boolean().optional(),

@@ -1,4 +1,7 @@
 // ------------ Código para simular o gateway de forma autonôma ------------
+
+const String plantacao_id = "d05f1635-3743-48a8-8bb0-1c0b50c3cb7f";
+
 void setup() {
   Serial.begin(115200);
   randomSeed(analogRead(A5));
@@ -14,6 +17,8 @@ void loop() {
 
   unsigned int luminosidade = random(10, 96);
 
+  Serial.print(plantacao_id);
+  Serial.print(F(","));
   Serial.print(umidade_solo);
   Serial.print(F(","));
   Serial.print(umidade_ar);

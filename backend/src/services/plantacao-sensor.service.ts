@@ -1,7 +1,7 @@
-import { statusSensor } from '@prisma/client';
-import { PlantacaoSensorModel } from '../models/plantacao-sensor.model.js';
-import { SensorModel } from '../models/sensor.model.js';
-import { findOrThrow } from '../utils/find-or-throw.js';
+import { statusSensor } from '../../generated/prisma/client';
+import { PlantacaoSensorModel } from '../models/plantacao-sensor.model';
+import { SensorModel } from '../models/sensor.model';
+import { findOrThrow } from '../utils/find-or-throw';
 
 interface CriarPlantacaoSensorDados {
   plantacao_id: string;

@@ -1,12 +1,12 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
 
 datasource db {
   provider = "sqlite"
-}
-
-generator client {
-  provider = "prisma-client-js"
 }
 
 model Usuario {
@@ -45,6 +45,11 @@ enum tipoAlerta {
   Critico
 }
 
+enum DirecaoAlerta {
+  ABAIXO
+  ACIMA
+}
+
 enum tipoDispositivo {
   Arduino_Mega     @map("Arduino Mega")
   Arduino_Micro    @map("Arduino Micro")
@@ -62,7 +67,6 @@ model Dispositivo {
   status    statusDispositivo @default(Inativo)
   criado_em DateTime          @default(now())
 
-  // Relacionamento um-para-um com Plantação
   plantacao Plantacao?
 
   @@map("dispositivo")
@@ -71,7 +75,7 @@ model Dispositivo {
 model Plantacao {
   id                   String    @id @default(uuid())
   usuario_id           String
-  dispositivo_id       String    @unique // FK: Garante apenas 1 dispositivo por plantação
+  dispositivo_id       String    @unique
   nome                 String
   tipo                 String
   data_inicio          DateTime
@@ -84,18 +88,18 @@ model Plantacao {
   dispositivo Dispositivo       @relation(fields: [dispositivo_id], references: [id])
   sensores    PlantacaoSensor[]
   leituras    Leitura[]
-  alertas     Alerta[] // Relacionamento direto para facilitar a listagem de alertas por cultivo
 
   @@map("plantacao")
 }
 
 model Sensor {
-  id        String       @id @default(uuid())
+  id        String        @id @default(uuid())
   nome      String // Ex: "Sensor de Temperatura DHT11"
   tipo      tipoSensor
   unidade   String // Ex: "°C", "%", "Lux"
-  status    statusSensor @default(Inativo)
-  criado_em DateTime     @default(now())
+  status    statusSensor  @default(Inativo)
+  direcao   DirecaoAlerta @default(ABAIXO)
+  criado_em DateTime      @default(now())
 
   plantacoes PlantacaoSensor? // permite o sensor não estar em nenhuma plantação
 
@@ -109,8 +113,8 @@ model PlantacaoSensor {
   limite_atencao Float
   limite_critico Float
 
-  plantacao Plantacao @relation(fields: [plantacao_id], references: [id], onDelete: Restrict)
-  sensor    Sensor    @relation(fields: [sensor_id], references: [id]) // Restrict: não deletar sensor em uso
+  plantacao Plantacao @relation(fields: [plantacao_id], references: [id], onDelete: Cascade)
+  sensor    Sensor    @relation(fields: [sensor_id], references: [id])
 
   @@unique([plantacao_id, sensor_id]) // Impede duplicar o mesmo sensor na mesma plantação
   @@map("plantacao_sensor")
@@ -132,18 +136,16 @@ model Leitura {
 }
 
 model Alerta {
-  id           String     @id @default(uuid())
-  leitura_id   String
-  usuario_id   String
-  plantacao_id String
-  tipo         tipoAlerta
-  mensagem     String
-  notificacao  Boolean    @default(false)
-  gerado_em    DateTime   @default(now())
+  id          String     @id @default(uuid())
+  leitura_id  String
+  usuario_id  String
+  tipo        tipoAlerta
+  mensagem    String
+  notificacao Boolean    @default(false)
+  gerado_em   DateTime   @default(now())
 
-  leitura   Leitura   @relation(fields: [leitura_id], references: [id], onDelete: Cascade)
-  usuario   Usuario   @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
-  plantacao Plantacao @relation(fields: [plantacao_id], references: [id])
+  leitura Leitura @relation(fields: [leitura_id], references: [id], onDelete: Cascade)
+  usuario Usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
 
   @@map("alerta")
 }

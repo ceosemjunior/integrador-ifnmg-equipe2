@@ -1,14 +1,13 @@
-import { Prisma, tipoSensor } from '@prisma/client';
-import { AlertaService } from './alerta.service.js';
-import { LeituraModel } from '../models/leitura.model.js';
-import { PlantacaoModel } from '../models/plantacao.model.js';
-import { PlantacaoSensorModel } from '../models/plantacao-sensor.model.js';
-import { findOrThrow } from '../utils/find-or-throw.js';
+import { Prisma, tipoSensor } from '../../generated/prisma/client';
+import { AlertaService } from './alerta.service';
+import { LeituraModel } from '../models/leitura.model';
+import { PlantacaoSensorModel } from '../models/plantacao-sensor.model';
+import { findOrThrow } from '../utils/find-or-throw';
 
 type CamposLeitura = Pick<Prisma.LeituraCreateInput, 'temperatura' | 'umidade_ar' | 'umidade_solo' | 'luminosidade'>;
 
 interface CriarLeituraDados extends CamposLeitura {
-  plantacao_id?: string;
+  plantacao_id: string;
 }
 
 const TIPO_PARA_CAMPO: Record<tipoSensor, keyof CamposLeitura> = {
@@ -20,24 +19,7 @@ const TIPO_PARA_CAMPO: Record<tipoSensor, keyof CamposLeitura> = {
 
 export const LeituraService = {
   async criar(payload: CriarLeituraDados) {
-    if (payload.plantacao_id) {
-      const leitura = await LeituraService._criarParaPlantacao(payload.plantacao_id, payload);
-      return [leitura];
-    }
-
-    const plantacoes = await PlantacaoModel.buscarTodos();
-    const resultados = [];
-
-    for (const plantacao of plantacoes) {
-      const leitura = await LeituraService._criarParaPlantacao(plantacao.id, payload);
-      resultados.push(leitura);
-    }
-
-    return resultados;
-  },
-
-  async _criarParaPlantacao(plantacao_id: string, payload: CriarLeituraDados) {
-    const vinculos = await PlantacaoSensorModel.buscarPorPlantacao(plantacao_id);
+    const vinculos = await PlantacaoSensorModel.buscarPorPlantacao(payload.plantacao_id);
 
     const dadosFiltrados: Record<string, number | undefined | null> = {
       temperatura: undefined,
@@ -54,17 +36,17 @@ export const LeituraService = {
     }
 
     const resultado = await LeituraModel.criar({
-      plantacao_id,
+      plantacao_id: payload.plantacao_id,
       ...dadosFiltrados,
     });
 
-    await AlertaService.gerarAlertasParaLeitura(resultado.id, plantacao_id);
+    await AlertaService.gerarAlertasParaLeitura(resultado.id, payload.plantacao_id);
 
     return resultado;
   },
 
-  async buscarTodos() {
-    return await LeituraModel.buscarTodos();
+  async buscarTodos(pagina?: number, limite?: number) {
+    return await LeituraModel.buscarTodos(pagina, limite);
   },
 
   async buscarPorId(id: string) {
@@ -72,8 +54,8 @@ export const LeituraService = {
   },
 
   async obterDadosDashboard(plantacao_id: string) {
-    const dados = await LeituraModel.buscarUltima(plantacao_id);
-    if (!dados) {
+    const dados = await LeituraModel.buscarDadosDashboard(plantacao_id);
+    if (!dados.ultima) {
       throw new Error('Nenhuma leitura encontrada para esta plantação.');
     }
     return dados;

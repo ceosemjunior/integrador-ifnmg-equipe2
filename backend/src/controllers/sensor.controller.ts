@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
-import { tipoSensor } from '@prisma/client';
-import { SensorModel } from '../models/sensor.model.js';
-import { findOrThrow } from '../utils/find-or-throw.js';
-import { parseId } from '../utils/parse-id.js';
+import { tipoSensor } from '../../generated/prisma/client';
+import { SensorModel } from '../models/sensor.model';
+import { findOrThrow } from '../utils/find-or-throw';
+import { parseId } from '../utils/parse-id';
 
 export const SensorController = {
   async criar(req: Request, res: Response, _next: NextFunction) {

@@ -1,18 +1,21 @@
 import { Request, Response, NextFunction } from 'express';
-import { LeituraService } from '../services/leitura.service.js';
-import { parseId } from '../utils/parse-id.js';
+import { LeituraService } from '../services/leitura.service';
+import { parseId } from '../utils/parse-id';
 
 export const LeituraController = {
   async criar(req: Request, res: Response, _next: NextFunction) {
-    const leituras = await LeituraService.criar(req.body);
+    const leitura = await LeituraService.criar(req.body);
+
     return res.status(201).json({
-      mensagem: `Dados dos sensores processados para ${leituras.length} plantação(ões).`,
-      dados: leituras,
+      mensagem: 'Dados dos sensores processados com sucesso.',
+      dados: leitura,
     });
   },
 
-  async buscarTodos(_req: Request, res: Response, _next: NextFunction) {
-    const leituras = await LeituraService.buscarTodos();
+  async buscarTodos(req: Request, res: Response, _next: NextFunction) {
+    const pagina = Number(req.query.pagina) || undefined;
+    const limite = Number(req.query.limite) || undefined;
+    const leituras = await LeituraService.buscarTodos(pagina, limite);
     return res.status(200).json(leituras);
   },
 
