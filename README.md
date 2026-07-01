@@ -1,165 +1,443 @@
 # 🌱 AgroSensor
 
-Sistema inteligente de monitoramento climático voltado ao apoio da
-agricultura familiar no Vale do Jequitinhonha, utilizando IoT,
-sensores ambientais, gateway serial e visualização de dados em tempo
-real.
+<p align="center">
+
+Sistema inteligente de monitoramento climático para agricultura familiar utilizando Internet das Coisas (IoT), arquitetura modular, sistema embarcado, gateway de comunicação e API REST.
+
+Projeto desenvolvido na disciplina de **Projeto Integrador** do **Instituto Federal do Norte de Minas Gerais (IFNMG)**.
+
+</p>
 
 ---
 
-## 📌 Sobre o Projeto
+## 📖 Sobre o Projeto
 
-O **AgroSensor** é um sistema de monitoramento climático desenvolvido
-para auxiliar pequenos produtores rurais no acompanhamento das
-condições ambientais da plantação.
+O **AgroSensor** é uma solução tecnológica desenvolvida para auxiliar pequenos produtores rurais no monitoramento das condições ambientais de suas plantações por meio de dispositivos de baixo custo baseados em Internet das Coisas (IoT).
 
-O projeto utiliza sensores conectados a um **Arduino Mega 2560** para
-coletar dados ambientais em tempo real, transmitindo as informações
-para um backend responsável pelo processamento, armazenamento e
-visualização dos dados.
+O sistema realiza a coleta automática de dados ambientais utilizando sensores conectados a um **Arduino Mega 2560**, encaminha essas informações por meio de um **Gateway Serial**, processa os dados em uma **API REST** desenvolvida em **Node.js** e armazena as leituras em banco de dados para posterior consulta e geração automática de alertas.
 
-A proposta foi idealizada considerando os desafios enfrentados pela
-agricultura familiar no **Vale do Jequitinhonha**, região marcada pelo
-clima semiárido, altas temperaturas e períodos prolongados de seca.
-
-O sistema busca oferecer uma solução acessível e de baixo custo para
-apoiar o uso racional da água, melhorar o monitoramento agrícola e
-auxiliar na tomada de decisões relacionadas ao plantio e irrigação.
+O projeto foi concebido considerando a realidade da agricultura familiar do **Vale do Jequitinhonha**, região caracterizada por longos períodos de estiagem e elevada variabilidade climática, buscando oferecer uma ferramenta acessível para apoiar o acompanhamento das condições ambientais e contribuir para a tomada de decisões relacionadas ao manejo agrícola.
 
 ---
 
-## 🎯 Objetivos
+# 🎯 Objetivos
 
-* Monitorar variáveis ambientais em tempo real;
-* Auxiliar produtores rurais na tomada de decisões agrícolas;
-* Coletar e armazenar dados climáticos;
-* Gerar alertas ambientais;
-* Desenvolver uma arquitetura IoT aplicada à agricultura familiar;
-* Promover acessibilidade tecnológica para pequenos produtores.
+## Objetivo Geral
+
+Desenvolver uma solução baseada em Internet das Coisas capaz de monitorar variáveis ambientais em tempo real, permitindo o acompanhamento das condições climáticas das plantações e auxiliando produtores rurais na tomada de decisões.
+
+## Objetivos Específicos
+
+- Monitorar temperatura ambiente;
+- Monitorar umidade do ar;
+- Monitorar umidade do solo;
+- Monitorar luminosidade;
+- Armazenar automaticamente as leituras ambientais;
+- Gerenciar usuários, plantações e sensores;
+- Emitir notificações automáticas via WhatsApp em situações críticas;
+- Utilizar arquitetura modular para facilitar manutenção e evolução do sistema;
+- Empregar hardware de baixo custo compatível com agricultura familiar.
 
 ---
 
-## Arquitetura do Sistema
+# 🚜 Contexto
+
+O AgroSensor foi desenvolvido considerando as necessidades da agricultura familiar presente no município de **Araçuaí** e em outras cidades do **Vale do Jequitinhonha**, região onde fatores climáticos influenciam diretamente a produtividade agrícola.
+
+A proposta consiste em disponibilizar uma solução acessível, utilizando componentes eletrônicos de baixo custo e tecnologias amplamente difundidas, permitindo automatizar parte do monitoramento ambiental normalmente realizado de forma manual pelos produtores.
+
+---
+
+# 🏗 Arquitetura do Sistema
+
+O sistema foi desenvolvido utilizando uma arquitetura em camadas composta por sistema embarcado, gateway de comunicação, backend e banco de dados.
 
 ```text
-Sensores -> Arduino Mega 2560 -> Gateway Serial -> API REST ->
-Banco de Dados -> Dashboard
+                Sensores Ambientais
+                       │
+                       ▼
+              Arduino Mega 2560
+                       │
+        Comunicação Serial (USB)
+                       │
+                       ▼
+                Gateway Serial
+                       │
+                 API REST (HTTP)
+                       │
+                       ▼
+                 Backend Node.js
+                       │
+     Controllers → Services → Models
+                       │
+                 Prisma ORM
+                       │
+                       ▼
+                  Banco SQLite
+                       │
+                       ▼
+          Dashboard / Interface Web
+                       │
+                       ▼
+             Notificações WhatsApp
 ```
 
 ---
 
-## ⚙️ Tecnologias Utilizadas
+# 🔄 Fluxo de Funcionamento
 
-### Hardware
+O funcionamento do AgroSensor ocorre conforme as etapas abaixo:
 
-* Arduino Mega 2560
-* Sensor DHT22 (temperatura e umidade do ar)
-* Sensor de Umidade do Solo HW-080
-* Sensor de Luminosidade LDR
+1. Os sensores realizam a leitura das variáveis ambientais.
 
----
+2. O Arduino Mega processa essas leituras e identifica a plantação correspondente.
 
-### Software
+3. O Gateway recebe as informações pela porta serial.
 
-* Node.js
-* Express.js
-* Prisma ORM
-* SQLite
-* JavaScript
-* Gateway Serial USB
-* API REST
-* Git e GitHub
+4. O Gateway realiza validações básicas dos dados recebidos.
 
----
+5. As leituras são encaminhadas para a API REST.
 
-## Funcionalidades
+6. O Backend valida as informações utilizando schemas.
 
-* Coleta de temperatura ambiente;
-* Coleta de umidade do ar;
-* Monitoramento da umidade do solo;
-* Leitura de luminosidade;
-* Transmissão serial de dados;
-* Integração entre Arduino e backend;
-* Armazenamento de leituras ambientais;
-* Sistema de alertas climáticos;
-* Estrutura preparada para dashboards e visualização de dados.
+7. Os dados são processados pelas regras de negócio.
+
+8. As leituras são armazenadas no banco de dados.
+
+9. Caso algum limite configurado seja ultrapassado, o sistema gera automaticamente um alerta.
+
+10. O alerta pode ser encaminhado ao produtor por meio do serviço de notificações via WhatsApp.
 
 ---
 
-## Modelagem do Banco de Dados
+# ✨ Principais Funcionalidades
 
-O sistema foi modelado utilizando banco relacional com suporte às
-seguintes entidades:
-
-* Usuários
-* Plantações
-* Sensores
-* Leituras
-* Alertas
-* Associação entre sensores e plantações
-
-A modelagem permite:
-
-* múltiplas plantações por usuário;
-* múltiplos sensores por plantação;
-* definição de limites de atenção e críticos;
-* geração de alertas automáticos.
-
----
-
-## Funcionamento do Gateway
-
-O gateway é responsável por:
-
-* receber os dados enviados pelo Arduino via comunicação serial;
-* validar os dados recebidos;
-* converter os valores para formato adequado;
-* encaminhar as leituras para a API REST.
-
-Essa arquitetura desacoplada permite maior organização e
-escalabilidade do sistema.
+- Cadastro de usuários;
+- Autenticação de usuários;
+- Criptografia de senhas;
+- Cadastro de plantações;
+- Cadastro de sensores;
+- Cadastro de dispositivos;
+- Associação entre sensores e plantações;
+- Recebimento automático das leituras ambientais;
+- Armazenamento das leituras em banco de dados;
+- Geração automática de alertas;
+- Notificações via WhatsApp;
+- API REST para gerenciamento completo do sistema;
+- Arquitetura modular baseada em camadas;
+- Validação automática dos dados recebidos;
+- Comunicação entre Arduino e Backend utilizando Gateway Serial.
 
 ---
 
-## Estrutura do Projeto
+# 🛠 Tecnologias Utilizadas
+
+## Hardware
+
+- Arduino Mega 2560
+- Sensor DHT22
+- Sensor de Umidade do Solo HW-080
+- Sensor LDR
+- Comunicação Serial USB
+
+---
+
+## Backend
+
+- Node.js
+- Express.js
+- TypeScript
+- Prisma ORM
+- SQLite
+- JSON Web Token (JWT)
+- bcrypt
+- Zod
+
+---
+
+## Gateway
+
+- Node.js
+- TypeScript
+- SerialPort
+- Zod
+
+---
+
+## Banco de Dados
+
+- SQLite
+- Prisma ORM
+
+---
+
+## Controle de Versão
+
+- Git
+- GitHub
+
+---
+
+## Ferramentas de Desenvolvimento
+
+- Visual Studio Code
+- Arduino IDE
+- Figma
+- BrModelo
+- Draw.io
+
+  # 📂 Estrutura do Projeto
+
+```text
+AgroSensor
+│
+├── arduino/
+│   └── main/
+│       └── main.ino
+│
+├── backend/
+│   ├── prisma/
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── services/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── middlewares/
+│   │   ├── schemas/
+│   │   ├── utils/
+│   │   ├── lib/
+│   │   ├── env/
+│   │   └── server.ts
+│   └── package.json
+│
+├── gateway/
+│   ├── src/
+│   │   ├── env/
+│   │   └── serial-gateway.ts
+│   └── package.json
+│
+├── frontend/
+│
+├── design-ux-ui/
+│
+├── documentacao/
+│   ├── diagramas/
+│   ├── requisitos.md
+│   ├── regras-negocio.md
+│   ├── casos-de-uso.md
+│   ├── modelagem-banco.md
+│   ├── projeto.md
+│   └── referencias.md
+│
+└── README.md
+```
+
+---
+
+# 🧩 Organização da Arquitetura
+
+O backend foi estruturado utilizando arquitetura modular, organizada por responsabilidades.
+
+```text
+Cliente
+     │
+     ▼
+Routes
+     │
+     ▼
+Controllers
+     │
+     ▼
+Services
+     │
+     ▼
+Models
+     │
+     ▼
+Prisma ORM
+     │
+     ▼
+SQLite
+```
+
+Essa organização proporciona:
+
+- separação de responsabilidades;
+- reutilização de código;
+- facilidade de manutenção;
+- maior legibilidade;
+- escalabilidade da aplicação.
+
+---
+
+# 🔐 Segurança
+
+O AgroSensor incorpora mecanismos voltados à segurança da aplicação.
+
+Entre eles destacam-se:
+
+- autenticação baseada em **JSON Web Token (JWT)**;
+- armazenamento criptografado das senhas utilizando **bcrypt**;
+- validação automática dos dados recebidos utilizando **Zod**;
+- middleware de autenticação para proteção das rotas privadas;
+- middleware global para tratamento centralizado de erros.
+
+Esses mecanismos contribuem para aumentar a confiabilidade da aplicação e reduzir riscos relacionados ao processamento de informações inválidas ou acessos não autorizados.
+
+---
+
+# 🗄 Banco de Dados
+
+O sistema utiliza banco de dados relacional **SQLite**, acessado por meio do **Prisma ORM**.
+
+As principais entidades implementadas são:
+
+- Usuário
+- Plantação
+- Sensor
+- Dispositivo
+- Leitura
+- Alerta
+- PlantaçãoSensor
+
+Essa modelagem permite:
+
+- gerenciamento de múltiplas plantações;
+- associação entre sensores e plantações;
+- armazenamento histórico das leituras;
+- geração automática de alertas;
+- rastreabilidade das informações.
+
+---
+
+# 🌡 Sensores Monitorados
+
+O sistema realiza o monitoramento das seguintes variáveis ambientais:
+
+| Sensor | Variável Monitorada |
+|---------|---------------------|
+| DHT22 | Temperatura do ambiente |
+| DHT22 | Umidade relativa do ar |
+| HW-080 | Umidade do solo |
+| LDR | Luminosidade |
+
+---
+
+# 📡 Gateway de Comunicação
+
+O Gateway constitui a camada intermediária entre o sistema embarcado e o backend.
+
+Suas responsabilidades incluem:
+
+- estabelecer comunicação serial com o Arduino;
+- receber as leituras ambientais;
+- validar os dados recebidos;
+- identificar a plantação correspondente;
+- encaminhar as informações para a API REST.
+
+A utilização dessa camada reduz o acoplamento entre hardware e software, permitindo que alterações em um dos componentes provoquem impacto mínimo sobre os demais módulos da aplicação.
+
+---
+
+# 🚀 Backend
+
+O backend concentra toda a lógica de negócio do sistema.
+
+Entre suas responsabilidades destacam-se:
+
+- autenticação de usuários;
+- gerenciamento das plantações;
+- gerenciamento de sensores;
+- gerenciamento dos dispositivos;
+- armazenamento das leituras;
+- processamento das regras de negócio;
+- geração automática de alertas;
+- integração com o serviço de notificações.
+
+---
+
+# 📲 Sistema de Notificações
+
+Quando uma leitura ultrapassa os limites configurados para determinada plantação, o backend realiza automaticamente a geração de um alerta.
+
+Os alertas podem ser enviados ao produtor por meio da integração com o serviço **CallMeBot**, utilizando o aplicativo **WhatsApp** como canal de comunicação.
+
+Essa funcionalidade permite informar rapidamente situações críticas relacionadas às condições ambientais monitoradas.
+
+---
+
+# 🔄 API REST
+
+A API disponibiliza endpoints para gerenciamento completo da aplicação.
+
+Entre os principais recursos encontram-se:
+
+- autenticação;
+- usuários;
+- plantações;
+- sensores;
+- dispositivos;
+- associação entre plantações e sensores;
+- leituras ambientais;
+- alertas.
+
+Todas as operações seguem o padrão REST adotado durante o desenvolvimento do projeto.
+
+---
+
+# 📈 Escalabilidade
+
+A arquitetura adotada foi projetada para permitir futuras expansões da aplicação.
+
+Entre as possibilidades destacam-se:
+
+- substituição do banco de dados SQLite por PostgreSQL;
+- implantação em servidores Linux;
+- execução em ambientes em nuvem;
+- integração com novos sensores;
+- utilização de múltiplos gateways;
+- expansão para novas culturas agrícolas.
+
+---
+
+# 🧪 Testes
+
+Durante o desenvolvimento foram realizados testes funcionais envolvendo:
+
+- autenticação;
+- cadastro de usuários;
+- cadastro de plantações;
+- cadastro de sensores;
+- associação entre sensores e plantações;
+- recebimento das leituras;
+- persistência dos dados;
+- geração automática de alertas;
+- comunicação entre Gateway e Backend;
+- integração com o serviço de notificações.
+
+Os testes confirmaram o correto funcionamento dos principais módulos implementados.
+
+# 🚀 Como Executar o Projeto
+
+## Pré-requisitos
+
+Antes de executar o projeto, certifique-se de possuir instalado:
+
+- Node.js 24.x
+- npm
+- Git
+- Arduino IDE
+- Visual Studio Code (recomendado)
+
+---
+
+## Clonando o Repositório
 
 ```bash
-NULL
+git clone https://github.com/carolainux/integrador-ifnmg-equipe2.git
 ```
 
----
-
-## Diagramas do Projeto
-
-### Modelo Conceitual
-
-![Modelo Conceitual](./documentacao/diagramas/modelo_conceitual.png)
-
----
-
-### Modelo Lógico
-
-![Modelo Lógico](./documentacao/diagramas/modelo_logico.png)
-
----
-
-### Diagrama da Arquitetura
-
-![Arquitetura do Projeto](./documentacao/diagramas/diagrama_projeto.png)
-
----
-
-## Como Executar o Projeto
-
-### Clone o repositório
-
-```bash
-git clone git@github.com:carolainux/integrador-ifnmg-equipe2.git
-```
-
----
-
-### Acesse a pasta do projeto
+Entre na pasta do projeto:
 
 ```bash
 cd integrador-ifnmg-equipe2
@@ -167,18 +445,27 @@ cd integrador-ifnmg-equipe2
 
 ---
 
-### Backend
+# ⚙️ Configuração do Backend
 
-#### Instalar dependências do Backend
+Acesse a pasta:
 
 ```bash
 cd backend
+```
+
+Instale as dependências:
+
+```bash
 npm install
 ```
 
----
+Crie o arquivo `.env` a partir do modelo disponível:
 
-#### Executar servidor
+```text
+.env.exemplo
+```
+
+Execute o servidor:
 
 ```bash
 npm run dev
@@ -186,80 +473,186 @@ npm run dev
 
 ---
 
-### Gateway
+# 📡 Configuração do Gateway
 
-#### Instalar dependências do Gateway
+Em outro terminal:
 
 ```bash
 cd gateway
+```
+
+Instale as dependências:
+
+```bash
 npm install
 ```
 
----
+Crie o arquivo `.env` utilizando o modelo:
 
-#### Executar gateway serial
+```text
+.env.exemplo
+```
+
+Inicie o Gateway:
 
 ```bash
-node serial-gateway.js
+npm start
 ```
 
 ---
 
-### Arduino
+# 🔌 Configuração do Arduino
 
-Faça upload do arquivo:
+Abra o arquivo:
 
 ```text
 arduino/main/main.ino
 ```
 
-para o Arduino Mega 2560 utilizando a IDE do Arduino.
+Utilizando a **Arduino IDE**, selecione:
+
+- Placa: **Arduino Mega 2560**
+- Porta Serial correspondente
+
+Realize o upload do programa para a placa.
+
+Após a inicialização, o Arduino começará a enviar automaticamente as leituras dos sensores para o Gateway.
 
 ---
 
-## Futuras Implementações
+# 📚 Documentação
 
-* Dashboard web interativo;
-* Sistema de autenticação;
-* Alertas em tempo real;
-* Integração com notificações;
-* Histórico climático;
-* Gráficos estatísticos;
-* Deploy em nuvem;
-* Aplicativo mobile.
+Toda a documentação produzida durante o desenvolvimento encontra-se disponível na pasta:
 
----
+```text
+documentacao/
+```
 
-## 📍 Contexto Regional
+Os principais documentos incluem:
 
-O projeto possui foco social e tecnológico voltado ao município de
-Araçuaí e ao Vale do Jequitinhonha, buscando oferecer soluções
-acessíveis para agricultura familiar em regiões afetadas pela
-escassez hídrica.
-
----
-
-## 👥 Equipe
-
-Projeto desenvolvido para a disciplina de Projeto Integrador.
-
-* **Carolaine Costa** — Product Owner (PO)
-  GitHub: @carolainux
-
-* **Alex Alves Santos** — Backend Developer
-  GitHub: @Alex-spec892
-
-* **Jailson Santos da Silva** — Backend Developer
-  GitHub: @jamsnxs
-
-* **Sandy Barbosa Fonseca** — Frontend Developer & UX/UI Designer
-  GitHub: @ceosemjunior
-
-* **Cybelle Leandro Bittencourt** — QA / Tester
-  GitHub: @cybellebitt21
+- Projeto
+- Requisitos
+- Regras de Negócio
+- Casos de Uso
+- Modelagem do Banco de Dados
+- Diagramas
+- Referências Bibliográficas
+- Atas de Reunião
 
 ---
 
-## 📄 Licença
+# 📊 Diagramas
 
-Este projeto possui finalidade acadêmica e educacional.
+O projeto possui documentação completa de modelagem.
+
+Entre os diagramas disponíveis destacam-se:
+
+- Modelo Conceitual
+- Modelo Lógico
+- Arquitetura do Sistema
+- Casos de Uso
+- Diagrama de Classes
+- Diagramas de Sequência
+
+Todos os arquivos encontram-se em:
+
+```text
+documentacao/diagramas/
+```
+
+---
+
+# 🎨 Protótipos
+
+As interfaces do sistema foram desenvolvidas utilizando o **Figma**, contemplando o fluxo completo de interação do usuário com a aplicação.
+
+Os protótipos representam a interface web responsável pelo gerenciamento das plantações, sensores, dispositivos, usuários e visualização das informações monitoradas.
+
+---
+
+# 🌎 Aplicação
+
+O AgroSensor foi desenvolvido para integrar diferentes tecnologias em uma única solução.
+
+Entre seus principais diferenciais destacam-se:
+
+- utilização de hardware de baixo custo;
+- arquitetura modular;
+- integração entre sistema embarcado e aplicação web;
+- processamento automático das leituras;
+- persistência das informações;
+- geração automática de alertas;
+- suporte à agricultura familiar.
+
+---
+
+# 🔮 Trabalhos Futuros
+
+Embora o sistema possua sua arquitetura principal implementada, algumas funcionalidades permanecem previstas para continuidade do projeto:
+
+- implementação completa da interface web;
+- construção de dashboards com gráficos históricos;
+- disponibilização de indicadores estatísticos;
+- implantação em ambiente de produção;
+- realização de testes em propriedades rurais;
+- integração com novos sensores ambientais;
+- suporte a múltiplos usuários simultâneos;
+- migração para banco de dados PostgreSQL.
+
+---
+
+# 🤝 Contribuição
+
+Este projeto foi desenvolvido com finalidade acadêmica.
+
+Sugestões, melhorias e contribuições são bem-vindas por meio da abertura de **Issues** ou **Pull Requests**.
+
+---
+
+# 👥 Equipe
+
+Projeto desenvolvido na disciplina de **Projeto Integrador** do Instituto Federal do Norte de Minas Gerais (IFNMG).
+
+| Integrante | Função |
+|------------|--------|
+| **Carolaine Costa** | Product Owner (PO) |
+| **Alex Alves Santos** | Backend Developer |
+| **Jailson Santos da Silva** | Backend Developer |
+| **Sandy Barbosa Fonseca** | UX/UI Designer e Frontend |
+| **Cybelle Leandro Bittencourt** | Quality Assurance (QA) |
+
+---
+
+# 📖 Artigo Científico
+
+O desenvolvimento do AgroSensor originou um artigo científico descrevendo a arquitetura proposta, a implementação da solução, os resultados obtidos e sua aplicação no contexto da agricultura familiar do Vale do Jequitinhonha.
+
+---
+
+# 📄 Licença
+
+Este projeto foi desenvolvido exclusivamente para fins acadêmicos e educacionais.
+
+Todos os direitos referentes aos códigos, documentação e artefatos produzidos pertencem aos respectivos autores.
+
+---
+
+# ⭐ Considerações
+
+O AgroSensor demonstra a viabilidade da utilização de tecnologias de Internet das Coisas no monitoramento agrícola por meio de uma solução composta por sistema embarcado, gateway de comunicação, backend modular e banco de dados relacional.
+
+A arquitetura implementada evidencia como componentes de baixo custo podem ser integrados para automatizar a aquisição, transmissão, processamento e armazenamento de informações ambientais, contribuindo para o desenvolvimento de ferramentas de apoio à agricultura familiar.
+
+---
+
+<div align="center">
+
+**AgroSensor**
+
+Sistema Inteligente de Monitoramento Climático para Agricultura Familiar
+
+Projeto Integrador • IFNMG
+
+Vale do Jequitinhonha • Minas Gerais • Brasil
+
+</div>
