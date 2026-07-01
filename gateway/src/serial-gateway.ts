@@ -136,6 +136,7 @@ function conectarSerial(): void {
   });
 }
 
+// NOTE: por favor use uma nerd font para ficar legal a visualização do console log 🙏🙏🙏🙏: https://github.com/ryanoasis/nerd-fonts
 console.log('😈 Gateway AgroSensor iniciado!');
 console.log(`  Rota de destino: ${urlBackend}`);
 conectarSerial();
